@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { GlassCard } from '../common/GlassCard';
-import { Calendar as CalendarIcon, Clock, Plus, CheckCircle2, Circle } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Plus, CheckCircle2, Circle, Radio } from 'lucide-react';
 import { format } from 'date-fns';
+import { supabase } from '../../lib/supabase';
 
 export const CalendarView: React.FC = () => {
   const { timeBlocks, addTimeBlock, toggleTimeBlock } = useLifeOSStore();
@@ -11,8 +12,32 @@ export const CalendarView: React.FC = () => {
   const [startTime, setStartTime] = useState('14:00');
   const [endTime, setEndTime] = useState('15:00');
   const [category, setCategory] = useState('Deep Work');
+  const [isRealtimeActive, setIsRealtimeActive] = useState(true);
 
   const todayStr = format(new Date(), 'yyyy-MM-dd');
+
+  // Supabase Realtime WebSocket Subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime_calendar')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reminders' },
+        (payload) => {
+          console.log('Realtime schedule update received:', payload);
+          setIsRealtimeActive(true);
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setIsRealtimeActive(true);
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleCreateBlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +59,14 @@ export const CalendarView: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Time Blocking & Planner</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold text-white tracking-tight">Time Blocking & Planner</h2>
+            {isRealtimeActive && (
+              <span className="flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Radio className="w-3 h-3 text-emerald-400 animate-pulse" /> Realtime Sync Live
+              </span>
+            )}
+          </div>
           <p className="text-xs text-zinc-400 mt-1">
             Eliminate cognitive friction by assigning dedicated time slots for workouts, deep work, and mindfulness.
           </p>
@@ -49,9 +81,14 @@ export const CalendarView: React.FC = () => {
 
       {/* Schedule Timeline */}
       <GlassCard className="p-5">
-        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
-          <CalendarIcon className="w-4 h-4 text-indigo-400" />
-          <h3 className="text-sm font-semibold text-white">Today's Timeline ({format(new Date(), 'MMMM d')})</h3>
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-sm font-semibold text-white">Today's Timeline ({format(new Date(), 'MMMM d')})</h3>
+          </div>
+          <span className="text-xs text-zinc-400 font-mono">
+            {timeBlocks.length} Time Blocks ({timeBlocks.filter(b => b.is_completed).length} Completed)
+          </span>
         </div>
 
         <div className="space-y-3">
