@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLifeOSStore } from './store/useLifeOSStore';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { MobileNav } from './components/layout/MobileNav';
 import { CommandPalette } from './components/common/CommandPalette';
+import { supabase } from './lib/supabase';
 
 import { DashboardView } from './components/dashboard/DashboardView';
 import { HabitsView } from './components/habits/HabitsView';
@@ -15,7 +16,35 @@ import { SettingsView } from './components/settings/SettingsView';
 import { ProfileView } from './components/profile/ProfileView';
 
 export function App() {
-  const { activePage } = useLifeOSStore();
+  const { activePage, updateProfile, profile } = useLifeOSStore();
+
+  useEffect(() => {
+    // Check initial Auth session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        updateProfile({
+          id: session.user.id,
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          avatar_url: session.user.user_metadata?.avatar_url || profile.avatar_url,
+        });
+      }
+    });
+
+    // Listen for Auth changes (OAuth redirects, logins, signouts)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        updateProfile({
+          id: session.user.id,
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          avatar_url: session.user.user_metadata?.avatar_url || profile.avatar_url,
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const renderCurrentView = () => {
     switch (activePage) {
