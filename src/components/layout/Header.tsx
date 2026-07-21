@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
-import { Search, Command, Bell, Sparkles, LogIn, UserCheck } from 'lucide-react';
+import { Search, Command, Bell, Sparkles, LogIn, LogOut, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '../../lib/supabase';
 import { AuthModal } from '../auth/AuthModal';
@@ -12,7 +12,6 @@ export const Header: React.FC = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Get current active session
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
         setUser(data.user);
@@ -24,7 +23,6 @@ export const Header: React.FC = () => {
       }
     });
 
-    // Listen to Auth State Changes
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
@@ -42,6 +40,11 @@ export const Header: React.FC = () => {
       listener.subscription.unsubscribe();
     };
   }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
   const getTitle = () => {
     switch (activePage) {
@@ -91,25 +94,34 @@ export const Header: React.FC = () => {
             <span className="text-xs font-mono font-bold text-white">{lifeScore.score}</span>
           </div>
 
-          {/* User Auth Button / Profile Status */}
+          {/* User Auth Status / Sign Out */}
           {user ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-              <img
-                src={profile.avatar_url}
-                alt={profile.full_name}
-                className="w-8 h-8 rounded-full border border-emerald-500/50 object-cover"
-              />
-              <div className="hidden lg:flex flex-col text-left">
-                <span className="text-xs font-semibold text-white leading-none">{profile.full_name}</span>
-                <span className="text-[9px] font-mono text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
-                  <UserCheck className="w-2.5 h-2.5" /> Connected
-                </span>
+            <div className="flex items-center gap-3 pl-2 border-l border-white/10">
+              <div className="flex items-center gap-2">
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.full_name}
+                  className="w-8 h-8 rounded-full border border-emerald-500/50 object-cover"
+                />
+                <div className="hidden lg:flex flex-col text-left">
+                  <span className="text-xs font-semibold text-white leading-none">{profile.full_name}</span>
+                  <span className="text-[9px] font-mono text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
+                    <UserCheck className="w-2.5 h-2.5" /> Connected
+                  </span>
+                </div>
               </div>
+              <button
+                onClick={handleSignOut}
+                title="Sign Out"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           ) : (
             <button
               onClick={() => setShowAuthModal(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 transition-all"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 transition-all"
             >
               <LogIn className="w-3.5 h-3.5" /> Sign In
             </button>
