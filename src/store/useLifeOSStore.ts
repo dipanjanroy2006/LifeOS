@@ -52,96 +52,6 @@ const initialPillars: Pillar[] = [
   { id: 'p5', title: 'Relationships', category: 'relationships', color: '#f43f5e', icon: 'Heart', description: 'Family, friendships, and community engagement.' },
 ];
 
-const initialHabits: Habit[] = [
-  { id: 'h1', user_id: 'u1', pillar_id: 'p1', title: 'Morning Hydration & 30-min Workout', frequency: 'daily', target_days: [0,1,2,3,4,5,6], target_count: 1, time_of_day: 'morning', streak_count: 14, best_streak: 21, archived: false, color: '#10b981', icon: 'Zap', created_at: '2026-01-01' },
-  { id: 'h2', user_id: 'u1', pillar_id: 'p4', title: '15-min Mindfulness Meditation', frequency: 'daily', target_days: [0,1,2,3,4,5,6], target_count: 1, time_of_day: 'morning', streak_count: 8, best_streak: 15, archived: false, color: '#8b5cf6', icon: 'Sparkles', created_at: '2026-01-01' },
-  { id: 'h3', user_id: 'u1', pillar_id: 'p2', title: 'Deep Work Coding Session (2 Hours)', frequency: 'daily', target_days: [1,2,3,4,5], target_count: 1, time_of_day: 'afternoon', streak_count: 12, best_streak: 19, archived: false, color: '#6366f1', icon: 'Code', created_at: '2026-01-01' },
-  { id: 'h4', user_id: 'u1', pillar_id: 'p3', title: 'Track Expenses & Portfolio Review', frequency: 'weekly_days', target_days: [5], target_count: 1, time_of_day: 'evening', streak_count: 4, best_streak: 8, archived: false, color: '#f59e0b', icon: 'TrendingUp', created_at: '2026-01-01' },
-  { id: 'h5', user_id: 'u1', pillar_id: 'p1', title: 'Read 20 Pages of Tech / Growth Book', frequency: 'daily', target_days: [0,1,2,3,4,5,6], target_count: 1, time_of_day: 'evening', streak_count: 19, best_streak: 30, archived: false, color: '#06b6d4', icon: 'BookOpen', created_at: '2026-01-01' },
-];
-
-const initialGoals: Goal[] = [
-  {
-    id: 'g1',
-    user_id: 'u1',
-    pillar_id: 'p2',
-    title: 'Architect & Deploy Production LifeOS PWA',
-    description: 'Build a high performance Personal Life Operating System with modern UX.',
-    target_date: '2026-08-30',
-    status: 'in_progress',
-    created_at: '2026-07-01',
-    key_results: [
-      { id: 'kr1', goal_id: 'g1', title: 'Core UI Modules Implemented', current_value: 6, target_value: 7, unit: 'modules' },
-      { id: 'kr2', goal_id: 'g1', title: 'Lighthouse Performance Score', current_value: 98, target_value: 100, unit: 'pts' },
-      { id: 'kr3', goal_id: 'g1', title: 'PWA Offline Storage Sync Test', current_value: 1, target_value: 1, unit: 'pass' },
-    ],
-  },
-  {
-    id: 'g2',
-    user_id: 'u1',
-    pillar_id: 'p1',
-    title: 'Achieve Peak Physical Fitness & Stamina',
-    description: 'Maintain regular strength training and cardiovascular health.',
-    target_date: '2026-09-15',
-    status: 'in_progress',
-    created_at: '2026-07-01',
-    key_results: [
-      { id: 'kr4', goal_id: 'g2', title: 'Weekly Workouts Logged', current_value: 18, target_value: 24, unit: 'sessions' },
-      { id: 'kr5', goal_id: 'g2', title: '5K Run Time Improvement', current_value: 23.5, target_value: 22.0, unit: 'mins' },
-    ],
-  },
-];
-
-// Generate initial habit logs for past 30 days
-const generateInitialHabitLogs = (): Record<string, HabitLog> => {
-  const logs: Record<string, HabitLog> = {};
-  initialHabits.forEach((h) => {
-    logs[`${h.id}_${TODAY_STR}`] = {
-      id: `hl_${h.id}_${TODAY_STR}`,
-      habit_id: h.id,
-      user_id: 'u1',
-      logged_date: TODAY_STR,
-      completed_count: 1,
-      status: 'completed',
-    };
-
-    for (let i = 1; i <= 30; i++) {
-      const dStr = format(subDays(new Date(), i), 'yyyy-MM-dd');
-      if (Math.random() > 0.25) {
-        logs[`${h.id}_${dStr}`] = {
-          id: `hl_${h.id}_${dStr}`,
-          habit_id: h.id,
-          user_id: 'u1',
-          logged_date: dStr,
-          completed_count: 1,
-          status: 'completed',
-        };
-      }
-    }
-  });
-  return logs;
-};
-
-const initialTimeBlocks: TimeBlock[] = [
-  { id: 'tb1', user_id: 'u1', title: 'Morning Workout & Hydration', start_time: `${TODAY_STR}T07:00:00`, end_time: `${TODAY_STR}T07:45:00`, category: 'Health', is_completed: true, color: '#10b981' },
-  { id: 'tb2', user_id: 'u1', title: 'System Architecture Review', start_time: `${TODAY_STR}T09:00:00`, end_time: `${TODAY_STR}T11:30:00`, category: 'Career', is_completed: true, color: '#6366f1' },
-  { id: 'tb3', user_id: 'u1', title: 'Deep Work Coding & Component Build', start_time: `${TODAY_STR}T13:00:00`, end_time: `${TODAY_STR}T15:30:00`, category: 'Career', is_completed: false, color: '#6366f1' },
-  { id: 'tb4', user_id: 'u1', title: 'Mindfulness & Reading Hour', start_time: `${TODAY_STR}T19:00:00`, end_time: `${TODAY_STR}T20:00:00`, category: 'Mindfulness', is_completed: false, color: '#8b5cf6' },
-];
-
-const initialMoodLogs: Record<string, MoodLog> = {
-  [TODAY_STR]: {
-    id: `ml_${TODAY_STR}`,
-    user_id: 'u1',
-    logged_date: TODAY_STR,
-    valence: 4,
-    energy: 5,
-    tags: ['productive', 'focused', 'energized'],
-    journal_entry: 'Great momentum today. System components feel responsive and crisp.',
-    created_at: new Date().toISOString(),
-  },
-};
-
 export const useLifeOSStore = create<LifeOSState>((set, get) => ({
   activePage: 'dashboard',
   setActivePage: (page: string) => set({ activePage: page }),
@@ -154,13 +64,16 @@ export const useLifeOSStore = create<LifeOSState>((set, get) => ({
     avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
     timezone: 'Asia/Kolkata',
     theme_preference: 'dark',
-    created_at: '2026-01-01',
+    created_at: new Date().toISOString().split('T')[0],
   },
   updateProfile: (updates: Partial<UserProfile>) => set((state) => ({ profile: { ...state.profile, ...updates } })),
 
   pillars: initialPillars,
-  habits: initialHabits,
-  habitLogs: generateInitialHabitLogs(),
+  habits: [],
+  habitLogs: {},
+  goals: [],
+  timeBlocks: [],
+  moodLogs: {},
 
   toggleHabitLog: (habitId: string, dateStr: string = TODAY_STR) => set((state) => {
     const key = `${habitId}_${dateStr}`;
@@ -209,7 +122,6 @@ export const useLifeOSStore = create<LifeOSState>((set, get) => ({
     habits: state.habits.filter((h) => h.id !== habitId),
   })),
 
-  goals: initialGoals,
   addGoal: (newGoalData: Omit<Goal, 'id' | 'user_id' | 'created_at'>) => set((state) => {
     const newGoal: Goal = {
       ...newGoalData,
@@ -235,7 +147,6 @@ export const useLifeOSStore = create<LifeOSState>((set, get) => ({
     }),
   })),
 
-  timeBlocks: initialTimeBlocks,
   addTimeBlock: (blockData: Omit<TimeBlock, 'id' | 'user_id'>) => set((state) => ({
     timeBlocks: [...state.timeBlocks, { ...blockData, id: `tb_${Date.now()}`, user_id: state.profile.id }],
   })),
@@ -244,7 +155,6 @@ export const useLifeOSStore = create<LifeOSState>((set, get) => ({
     timeBlocks: state.timeBlocks.map((tb) => tb.id === blockId ? { ...tb, is_completed: !tb.is_completed } : tb),
   })),
 
-  moodLogs: initialMoodLogs,
   logMood: (valence: number, energy: number, tags: string[], entry?: string) => set((state) => ({
     moodLogs: {
       ...state.moodLogs,
