@@ -19,6 +19,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const parseErrorMessage = (err: any): string => {
+    if (!err) return 'Authentication failed.';
+    if (typeof err === 'string') return err;
+    if (err.message && err.message !== '{}') return err.message;
+    if (err.error_description) return err.error_description;
+    return 'If you already have an account, try signing in.';
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -38,7 +46,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           },
         });
         if (error) throw error;
-        setSuccessMsg('Account created successfully! Check your email or log in.');
+        if (data.user && !data.session) {
+          setSuccessMsg('Account created! Please check your email inbox to confirm your account.');
+        } else {
+          setSuccessMsg('Account created successfully! You are logged in.');
+          setTimeout(() => onClose(), 1000);
+        }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -49,7 +62,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setTimeout(() => onClose(), 1000);
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Authentication failed');
+      setErrorMsg(parseErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -65,7 +78,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       });
       if (error) throw error;
     } catch (err: any) {
-      setErrorMsg(err.message || 'Google login failed');
+      setErrorMsg(parseErrorMessage(err));
     }
   };
 
@@ -207,7 +220,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         {/* Toggle Mode */}
         <div className="text-center pt-2">
           <button
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => { setIsSignUp(!isSignUp); setErrorMsg(null); setSuccessMsg(null); }}
             className="text-xs text-zinc-400 hover:text-indigo-400 transition-colors"
           >
             {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Create one"}

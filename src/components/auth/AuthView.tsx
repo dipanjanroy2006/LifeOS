@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { GlassCard } from '../common/GlassCard';
-import { Zap, Mail, Lock, LogIn, UserPlus, AlertCircle, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, KeyRound } from 'lucide-react';
+import { Zap, Mail, Lock, LogIn, UserPlus, AlertCircle, CheckCircle2, ArrowRight, ShieldCheck, KeyRound } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface AuthViewProps {
@@ -19,6 +19,14 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onContinueAsGuest
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  const parseErrorMessage = (err: any): string => {
+    if (!err) return 'Authentication failed.';
+    if (typeof err === 'string') return err;
+    if (err.message && err.message !== '{}') return err.message;
+    if (err.error_description) return err.error_description;
+    return 'User already exists or invalid credentials. Try signing in.';
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -34,7 +42,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onContinueAsGuest
           },
         });
         if (error) throw error;
-        setSuccessMsg('Magic link sent to your email! Check your inbox to log in.');
+        setSuccessMsg('Magic link sent! Please check your email inbox to log in.');
       } else if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -47,7 +55,12 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onContinueAsGuest
           },
         });
         if (error) throw error;
-        setSuccessMsg('Account created successfully! Check your email or sign in.');
+        if (data.user && !data.session) {
+          setSuccessMsg('Account created! Please check your email inbox to confirm your account.');
+        } else {
+          setSuccessMsg('Account created successfully! You are logged in.');
+          if (onSuccess) onSuccess();
+        }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -58,7 +71,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onContinueAsGuest
         if (onSuccess) onSuccess();
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Authentication failed. Please verify credentials.');
+      setErrorMsg(parseErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -75,7 +88,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onContinueAsGuest
       });
       if (error) throw error;
     } catch (err: any) {
-      setErrorMsg(err.message || 'Google authentication failed');
+      setErrorMsg(parseErrorMessage(err));
     }
   };
 
