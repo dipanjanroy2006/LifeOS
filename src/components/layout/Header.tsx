@@ -1,11 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
-import { Search, Command, Bell, Sparkles } from 'lucide-react';
+import { Search, Command, Bell, Sparkles, LogIn, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
+import { supabase } from '../../lib/supabase';
+import { AuthModal } from '../auth/AuthModal';
 
 export const Header: React.FC = () => {
-  const { activePage, profile, setCommandPaletteOpen, getDailyLifeScore } = useLifeOSStore();
+  const { activePage, profile, setCommandPaletteOpen, getDailyLifeScore, updateProfile } = useLifeOSStore();
   const lifeScore = getDailyLifeScore();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Get current active session
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUser(data.user);
+        updateProfile({
+          id: data.user.id,
+          full_name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
+          avatar_url: data.user.user_metadata?.avatar_url || profile.avatar_url,
+        });
+      }
+    });
+
+    // Listen to Auth State Changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        updateProfile({
+          id: session.user.id,
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          avatar_url: session.user.user_metadata?.avatar_url || profile.avatar_url,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   const getTitle = () => {
     switch (activePage) {
@@ -22,54 +58,67 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-20 bg-[#09090b]/80 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-3.5 flex items-center justify-between">
-      {/* Page Title & Date */}
-      <div>
-        <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          {getTitle()}
-        </h1>
-        <p className="text-xs text-zinc-400 font-mono mt-0.5">
-          {format(new Date(), 'EEEE, MMMM d, yyyy')}
-        </p>
-      </div>
-
-      {/* Right Controls */}
-      <div className="flex items-center gap-3">
-        {/* Command Palette Trigger */}
-        <button
-          onClick={() => setCommandPaletteOpen(true)}
-          className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs transition-colors"
-        >
-          <Search className="w-3.5 h-3.5" />
-          <span>Quick action / search...</span>
-          <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-300 border border-white/10">
-            <Command className="w-2.5 h-2.5" /> K
-          </kbd>
-        </button>
-
-        {/* Life Score Quick Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="text-xs font-semibold">Score</span>
-          <span className="text-xs font-mono font-bold text-white">{lifeScore.score}</span>
+    <>
+      <header className="sticky top-0 z-20 bg-[#09090b]/80 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-3.5 flex items-center justify-between">
+        {/* Page Title & Date */}
+        <div>
+          <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+            {getTitle()}
+          </h1>
+          <p className="text-xs text-zinc-400 font-mono mt-0.5">
+            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          </p>
         </div>
 
-        {/* Notifications */}
-        <button className="p-2 rounded-lg bg-zinc-900/80 border border-white/10 text-zinc-400 hover:text-white transition-colors relative">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        </button>
+        {/* Right Controls */}
+        <div className="flex items-center gap-3">
+          {/* Command Palette Trigger */}
+          <button
+            onClick={() => setCommandPaletteOpen(true)}
+            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs transition-colors"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span>Quick action / search...</span>
+            <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-300 border border-white/10">
+              <Command className="w-2.5 h-2.5" /> K
+            </kbd>
+          </button>
 
-        {/* User Avatar */}
-        <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-          <img
-            src={profile.avatar_url}
-            alt={profile.full_name}
-            className="w-8 h-8 rounded-full border border-indigo-500/40 object-cover"
-          />
-          <span className="hidden lg:inline-block text-xs font-medium text-zinc-200">{profile.full_name}</span>
+          {/* Life Score Quick Pill */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="text-xs font-semibold">Score</span>
+            <span className="text-xs font-mono font-bold text-white">{lifeScore.score}</span>
+          </div>
+
+          {/* User Auth Button / Profile Status */}
+          {user ? (
+            <div className="flex items-center gap-2 pl-2 border-l border-white/10">
+              <img
+                src={profile.avatar_url}
+                alt={profile.full_name}
+                className="w-8 h-8 rounded-full border border-emerald-500/50 object-cover"
+              />
+              <div className="hidden lg:flex flex-col text-left">
+                <span className="text-xs font-semibold text-white leading-none">{profile.full_name}</span>
+                <span className="text-[9px] font-mono text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
+                  <UserCheck className="w-2.5 h-2.5" /> Connected
+                </span>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 transition-all"
+            >
+              <LogIn className="w-3.5 h-3.5" /> Sign In
+            </button>
+          )}
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Auth Modal Overlay */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+    </>
   );
 };
