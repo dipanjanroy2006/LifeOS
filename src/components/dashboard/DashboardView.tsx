@@ -33,7 +33,6 @@ export const DashboardView: React.FC = () => {
     timeBlocks,
     toggleTimeBlock,
     getDailyLifeScore,
-    setActivePage,
   } = useLifeOSStore();
   const { profile } = useAuth();
   const navigate = useNavigate();
@@ -103,10 +102,16 @@ export const DashboardView: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm">
+            <button
+              onClick={() => navigate('/settings')}
+              className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm"
+            >
               <Search className="w-3.5 h-3.5" />
             </button>
-            <button className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm">
+            <button
+              onClick={() => navigate('/profile')}
+              className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm"
+            >
               <Bell className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -122,15 +127,12 @@ export const DashboardView: React.FC = () => {
             <div>
               <span className="text-[9px] uppercase tracking-widest font-mono text-indigo-200">System Routine</span>
               <h3 className="text-base font-extrabold tracking-tight mt-0.5 leading-snug">Daily challenge</h3>
-              <p className="text-[10px] text-indigo-100 font-medium">Do your plan before 07:00 PM</p>
+              <p className="text-[10px] text-indigo-100 font-medium">
+                Complete {completedTodayCount}/{habitsDueToday.length} habits today to reach peak consistency!
+              </p>
             </div>
             
             <div className="flex items-center gap-1.5 pt-1">
-              <div className="flex -space-x-1.5">
-                <img className="w-4 h-4 rounded-full border border-violet-600 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=50&q=80" alt="collaborator" />
-                <img className="w-4 h-4 rounded-full border border-violet-600 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=50&q=80" alt="collaborator" />
-                <div className="w-4 h-4 rounded-full bg-violet-800 text-[8px] font-bold text-white flex items-center justify-center border border-violet-600 font-mono">+1</div>
-              </div>
               <span className="text-[9px] text-indigo-200 font-semibold font-mono">Streak: {peakStreak} days</span>
             </div>
           </div>
@@ -284,41 +286,98 @@ export const DashboardView: React.FC = () => {
           )}
         </div>
 
-        {/* Mockup Progress Breakdown Section */}
-        <div className="p-3.5 rounded-3xl bg-bg-card border border-border-subtle space-y-3 shadow-sm">
-          <h3 className="text-xs font-bold text-text-primary">Learning Plan Indicators</h3>
-          
-          <div className="space-y-2.5">
-            <div className="space-y-1">
-              <div className="flex justify-between text-[10px] text-text-secondary font-mono">
-                <span>Habit Index Score</span>
-                <span className="font-bold">{lifeScore.habit_component}/50</span>
-              </div>
-              <div className="w-full h-1.5 bg-bg-card-hover rounded-progress overflow-hidden">
-                <div className="h-full bg-brand-primary rounded-progress" style={{ width: `${(lifeScore.habit_component / 50) * 100}%` }} />
-              </div>
-            </div>
+        {/* Dynamic Scheduler Time Blocks - Restored Database Functionality */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-extrabold text-text-primary tracking-widest font-mono uppercase">Planner Blocks</h3>
+            <button
+              onClick={() => navigate('/calendar')}
+              className="text-[10px] text-brand-secondary font-bold flex items-center gap-0.5 hover:underline cursor-pointer"
+            >
+              Calendar <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-            <div className="space-y-1">
-              <div className="flex justify-between text-[10px] text-text-secondary font-mono">
-                <span>Goal Velocity</span>
-                <span className="font-bold">{lifeScore.goal_component}/30</span>
-              </div>
-              <div className="w-full h-1.5 bg-bg-card-hover rounded-progress overflow-hidden">
-                <div className="h-full bg-brand-secondary rounded-progress" style={{ width: `${(lifeScore.goal_component / 30) * 100}%` }} />
-              </div>
+          {timeBlocks.length === 0 ? (
+            <div className="py-4 text-center text-xs text-text-muted bg-bg-card border border-border-subtle rounded-3xl">No blocks scheduled today.</div>
+          ) : (
+            <div className="space-y-2">
+              {timeBlocks.map((block) => (
+                <div
+                  key={block.id}
+                  onClick={() => toggleTimeBlock(block.id)}
+                  className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
+                    block.is_completed ? 'bg-bg-card-hover/40 border-border-subtle opacity-60' : 'bg-bg-card border-border-subtle hover:border-brand-secondary/20 shadow-sm'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-1 h-5 rounded-full shrink-0" style={{ backgroundColor: block.color }} />
+                    <div>
+                      <h4 className={`text-[11px] font-bold truncate max-w-[150px] ${block.is_completed ? 'line-through text-text-muted' : 'text-text-primary'}`}>
+                        {block.title}
+                      </h4>
+                      <p className="text-[8px] text-text-muted font-mono mt-0.5">
+                        {format(new Date(block.start_time), 'HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[8px] px-1.5 py-0.5 rounded font-mono font-semibold ${block.is_completed ? 'bg-bg-card-hover text-text-muted' : 'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'}`}>
+                    {block.is_completed ? 'Done' : block.category}
+                  </span>
+                </div>
+              ))}
             </div>
+          )}
+        </div>
 
-            <div className="space-y-1">
-              <div className="flex justify-between text-[10px] text-text-secondary font-mono">
-                <span>Mood Consistency</span>
-                <span className="font-bold">{lifeScore.mood_component}/20</span>
+        {/* Dynamic Radial Life Score + Reflections - Restored Database Functionality */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Radial Life score */}
+          <div className="p-3.5 rounded-3xl bg-bg-card border border-border-subtle flex flex-col items-center justify-center text-center shadow-sm">
+            <h3 className="text-[9px] font-mono uppercase tracking-widest text-text-muted mb-2">Life Score Index</h3>
+            <RadialProgress score={lifeScore.score} size={85} />
+            <div className="grid grid-cols-3 gap-1 mt-2.5 w-full text-[8px] font-mono text-text-secondary border-t border-border-subtle/50 pt-2">
+              <div>
+                <span className="block text-text-muted">Habits</span>
+                <span className="text-brand-primary font-bold">{lifeScore.habit_component}</span>
               </div>
-              <div className="w-full h-1.5 bg-bg-card-hover rounded-progress overflow-hidden">
-                <div className="h-full bg-accent-warning rounded-progress" style={{ width: `${(lifeScore.mood_component / 20) * 100}%` }} />
+              <div className="border-x border-border-subtle/50">
+                <span className="block text-text-muted">Goals</span>
+                <span className="text-brand-secondary font-bold">{lifeScore.goal_component}</span>
+              </div>
+              <div>
+                <span className="block text-text-muted">Mood</span>
+                <span className="text-accent-warning font-bold">{lifeScore.mood_component}</span>
               </div>
             </div>
           </div>
+
+          {/* Quick reflection matrix panel */}
+          <div className="p-3.5 rounded-3xl bg-bg-card border border-border-subtle flex flex-col justify-between shadow-sm">
+            <div className="space-y-1">
+              <h3 className="text-xs font-bold text-text-primary">Daily Reflection</h3>
+              <p className="text-[9px] text-text-secondary leading-relaxed">
+                Log energy to correlate habits & mood trends.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/journal')}
+              className="w-full py-1.5 rounded-2xl bg-bg-card hover:bg-bg-card-hover border border-border-subtle text-text-primary font-semibold text-[10px] transition-all cursor-pointer mt-2"
+            >
+              Open Matrix
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile AI Coach widget */}
+        <div className="p-3.5 rounded-3xl border border-brand-primary/15 bg-brand-primary/5">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Sparkles className="w-3 h-3 text-brand-primary" />
+            <h3 className="text-[10px] font-bold text-text-primary">AI Growth Coach</h3>
+          </div>
+          <p className="text-[10px] text-text-secondary leading-relaxed">
+            "Completing the final routine of the evening will boost your score into Peak Performance status."
+          </p>
         </div>
       </div>
 
@@ -406,7 +465,7 @@ export const DashboardView: React.FC = () => {
                     onClick={() => navigate('/habits')}
                     className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-[10px] font-semibold transition-all cursor-pointer"
                   >
-                    <Plus className="w-3 h-3" /> Add Habit
+                    <Plus className="w-3.5 h-3.5" /> Add Habit
                   </button>
                 </div>
               ) : (
@@ -446,7 +505,7 @@ export const DashboardView: React.FC = () => {
                             {habit.time_of_day}
                           </span>
                           <span className={`text-[10px] font-mono font-semibold flex items-center gap-0.5 ${isFirstHighlight ? 'text-white' : 'text-accent-warning'}`}>
-                            <Flame className="w-3 h-3 fill-current" /> {habit.streak_count}d
+                            <Flame className="w-3.5 h-3.5 fill-current" /> {habit.streak_count}d
                           </span>
                         </div>
                       </div>
