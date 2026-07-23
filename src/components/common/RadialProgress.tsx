@@ -34,7 +34,7 @@ export const RadialProgress: React.FC<RadialProgressProps> = ({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#27272a"
+          stroke="var(--border-subtle)"
           strokeWidth={strokeWidth}
           fill="transparent"
         />
@@ -53,8 +53,8 @@ export const RadialProgress: React.FC<RadialProgressProps> = ({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-3xl font-extrabold text-white font-mono tracking-tight">{score}</span>
-        <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">{title}</span>
+        <span className="text-3xl font-extrabold text-text-primary font-mono tracking-tight">{score}</span>
+        <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">{title}</span>
       </div>
     </div>
   );
