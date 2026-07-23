@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import {
   LayoutDashboard,
@@ -17,9 +17,12 @@ import {
 import { clsx } from 'clsx';
 
 export const Sidebar: React.FC = () => {
-  const { activePage, setActivePage } = useLifeOSStore();
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Derive active id directly from URL path
+  const activePage = location.pathname.substring(1) || 'dashboard';
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -36,7 +39,6 @@ export const Sidebar: React.FC = () => {
   ];
 
   const handleNavigation = (id: string) => {
-    setActivePage(id);
     navigate(`/${id}`);
   };
 

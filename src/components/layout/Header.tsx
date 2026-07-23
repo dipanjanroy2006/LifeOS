@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { useAuth } from '../../auth/AuthProvider';
 import { useToast } from '../../hooks/useToast';
@@ -7,10 +8,14 @@ import { format } from 'date-fns';
 import { GlassCard } from '../common/GlassCard';
 
 export const Header: React.FC = () => {
-  const { activePage, setCommandPaletteOpen, getDailyLifeScore } = useLifeOSStore();
+  const { setCommandPaletteOpen, getDailyLifeScore } = useLifeOSStore();
   const { profile, signOut } = useAuth();
   const toast = useToast();
   const lifeScore = getDailyLifeScore();
+  const location = useLocation();
+  
+  // Derive active id directly from URL path
+  const activePage = location.pathname.substring(1) || 'dashboard';
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 

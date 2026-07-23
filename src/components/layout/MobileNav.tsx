@@ -1,15 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { LayoutDashboard, CheckSquare, Plus, BarChart3, User } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const MobileNav: React.FC = () => {
-  const { activePage, setActivePage, setCommandPaletteOpen } = useLifeOSStore();
+  const { setCommandPaletteOpen } = useLifeOSStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleNavigation = (id: string, path: string) => {
-    setActivePage(id);
+  // Derive active id directly from URL path
+  const activePage = location.pathname.substring(1) || 'dashboard';
+
+  const handleNavigation = (path: string) => {
     navigate(path);
   };
 
@@ -18,7 +21,7 @@ export const MobileNav: React.FC = () => {
       <nav className="bg-bg-sidebar/90 backdrop-blur-xl border border-border-subtle rounded-full px-4 py-2.5 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
         {/* Dashboard link */}
         <button
-          onClick={() => handleNavigation('dashboard', '/dashboard')}
+          onClick={() => handleNavigation('/dashboard')}
           className={clsx(
             'p-2 rounded-full transition-colors cursor-pointer',
             activePage === 'dashboard' ? 'text-brand-secondary bg-brand-secondary/10' : 'text-text-secondary hover:text-text-primary'
@@ -29,7 +32,7 @@ export const MobileNav: React.FC = () => {
 
         {/* Habits link */}
         <button
-          onClick={() => handleNavigation('habits', '/habits')}
+          onClick={() => handleNavigation('/habits')}
           className={clsx(
             'p-2 rounded-full transition-colors cursor-pointer',
             activePage === 'habits' ? 'text-brand-primary bg-brand-primary/10' : 'text-text-secondary hover:text-text-primary'
@@ -48,7 +51,7 @@ export const MobileNav: React.FC = () => {
 
         {/* Analytics link */}
         <button
-          onClick={() => handleNavigation('analytics', '/analytics')}
+          onClick={() => handleNavigation('/analytics')}
           className={clsx(
             'p-2 rounded-full transition-colors cursor-pointer',
             activePage === 'analytics' ? 'text-indigo-400 bg-indigo-500/10' : 'text-text-secondary hover:text-text-primary'
@@ -59,7 +62,7 @@ export const MobileNav: React.FC = () => {
 
         {/* Profile link */}
         <button
-          onClick={() => handleNavigation('profile', '/profile')}
+          onClick={() => handleNavigation('/profile')}
           className={clsx(
             'p-2 rounded-full transition-colors cursor-pointer',
             activePage === 'profile' ? 'text-amber-500 bg-amber-500/10' : 'text-text-secondary hover:text-text-primary'

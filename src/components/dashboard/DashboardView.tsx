@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { useAuth } from '../../auth/AuthProvider';
 import { GlassCard } from '../common/GlassCard';
@@ -29,9 +30,9 @@ export const DashboardView: React.FC = () => {
     timeBlocks,
     toggleTimeBlock,
     getDailyLifeScore,
-    setActivePage,
   } = useLifeOSStore();
   const { profile } = useAuth();
+  const navigate = useNavigate();
 
   const lifeScore = getDailyLifeScore();
   const today = new Date();
@@ -64,9 +65,6 @@ export const DashboardView: React.FC = () => {
       return;
     }
     
-    // Pass custom date option to store if supported, or toggle locally.
-    // In our store, toggleHabitLog toggles the log for the current today date.
-    // We can pass selectedDateStr if the store supports custom dates, or keep standard.
     toggleHabitLog(habitId, selectedDateStr);
     
     const isNowCompleted = habitLogs[`${habitId}_${selectedDateStr}`]?.status !== 'completed';
@@ -147,7 +145,7 @@ export const DashboardView: React.FC = () => {
                 </h3>
               </div>
               <button
-                onClick={() => setActivePage('habits')}
+                onClick={() => navigate('/habits')}
                 className="text-[10px] text-brand-secondary hover:underline flex items-center gap-0.5 font-semibold cursor-pointer"
               >
                 Manage All <ArrowRight className="w-3 h-3" />
@@ -158,8 +156,8 @@ export const DashboardView: React.FC = () => {
               <div className="py-4 text-center space-y-2">
                 <p className="text-[11px] text-text-secondary">No habits setup for today.</p>
                 <button
-                  onClick={() => setActivePage('habits')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-[10px] font-semibold transition-all"
+                  onClick={() => navigate('/habits')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-[10px] font-semibold transition-all cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> Add Habit
                 </button>
@@ -221,7 +219,7 @@ export const DashboardView: React.FC = () => {
                 <h3 className="text-xs font-bold text-text-primary">Active OKRs & Goals</h3>
               </div>
               <button
-                onClick={() => setActivePage('goals')}
+                onClick={() => navigate('/goals')}
                 className="text-[10px] text-brand-secondary hover:underline flex items-center gap-0.5 font-semibold cursor-pointer"
               >
                 All OKRs <ChevronRight className="w-3 h-3" />
@@ -308,7 +306,7 @@ export const DashboardView: React.FC = () => {
                 <h3 className="text-xs font-bold text-text-primary">Planner Blocks</h3>
               </div>
               <button
-                onClick={() => setActivePage('calendar')}
+                onClick={() => navigate('/calendar')}
                 className="text-[10px] text-brand-secondary hover:underline cursor-pointer font-semibold"
               >
                 Planner <ChevronRight className="w-3 h-3 inline" />
@@ -358,7 +356,7 @@ export const DashboardView: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={() => setActivePage('journal')}
+              onClick={() => navigate('/journal')}
               className="w-full py-1.5 rounded-btn bg-bg-card hover:bg-bg-card-hover border border-border-subtle text-text-primary font-semibold text-[10px] transition-all cursor-pointer active:scale-98"
             >
               Open Mood Matrix
