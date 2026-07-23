@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { GlassCard } from '../common/GlassCard';
 
 export const Header: React.FC = () => {
-  const { setCommandPaletteOpen, getDailyLifeScore } = useLifeOSStore();
+  const { getDailyLifeScore } = useLifeOSStore();
   const { profile, signOut } = useAuth();
   const toast = useToast();
   const lifeScore = getDailyLifeScore();
@@ -59,18 +59,6 @@ export const Header: React.FC = () => {
 
         {/* Right Controls */}
         <div className="flex items-center gap-3">
-          {/* Command Palette Trigger */}
-          <button
-            onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-bg-card-hover border border-border-subtle text-text-secondary text-xs transition-colors cursor-pointer"
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span>Quick action / search...</span>
-            <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-bg-card border border-border-subtle text-[10px] font-mono text-text-secondary">
-              <Command className="w-2.5 h-2.5" /> K
-            </kbd>
-          </button>
-
           {/* Life Score Quick Pill */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
             <Sparkles className="w-3.5 h-3.5 text-indigo-500" />

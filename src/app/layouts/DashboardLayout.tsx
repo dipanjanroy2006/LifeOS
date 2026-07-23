@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../../components/layout/Sidebar';
 import { Header } from '../../components/layout/Header';
 import { MobileNav } from '../../components/layout/MobileNav';
-import { CommandPalette } from '../../components/common/CommandPalette';
 import { LoadingSkeleton } from '../../shared/components/common/LoadingSkeleton';
 
 export const DashboardLayout: React.FC = () => {
@@ -24,9 +23,6 @@ export const DashboardLayout: React.FC = () => {
 
       {/* Mobile Navigation Bar */}
       <MobileNav />
-
-      {/* Command Palette Modal (Cmd+K) */}
-      <CommandPalette />
     </div>
   );
 };

@@ -103,12 +103,6 @@ export const DashboardView: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate('/settings')}
-              className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm"
-            >
-              <Search className="w-3.5 h-3.5" />
-            </button>
-            <button
               onClick={() => navigate('/profile')}
               className="p-2 rounded-full bg-bg-card border border-border-subtle text-text-secondary hover:text-text-primary cursor-pointer shadow-sm"
             >

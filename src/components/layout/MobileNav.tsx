@@ -5,7 +5,6 @@ import { LayoutDashboard, CheckSquare, Plus, BarChart3, User } from 'lucide-reac
 import { clsx } from 'clsx';
 
 export const MobileNav: React.FC = () => {
-  const { setCommandPaletteOpen } = useLifeOSStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,9 +40,9 @@ export const MobileNav: React.FC = () => {
           <CheckSquare className="w-5.5 h-5.5" />
         </button>
 
-        {/* Floating Action Button (Quick Log / Cmd+K Command Palette) */}
+        {/* Floating Action Button (Goes to Habits manager) */}
         <button
-          onClick={() => setCommandPaletteOpen(true)}
+          onClick={() => handleNavigation('/habits')}
           className="w-12 h-12 rounded-full bg-brand-primary hover:bg-emerald-600 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-brand-primary/20 transition-all cursor-pointer -translate-y-4"
         >
           <Plus className="w-6 h-6 stroke-[2.5]" />
