@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { GlassCard } from '../common/GlassCard';
-import { Target, Plus, Award, Calendar, CheckCircle, Sliders } from 'lucide-react';
+import { Plus, Calendar, Sliders } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const GoalsView: React.FC = () => {

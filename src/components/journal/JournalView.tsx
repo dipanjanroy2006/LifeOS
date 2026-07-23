@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { GlassCard } from '../common/GlassCard';
-import { BookOpen, Smile, Zap, Tag, Save, Sparkles } from 'lucide-react';
+import { BookOpen, Smile, Zap, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import confetti from 'canvas-confetti';
 

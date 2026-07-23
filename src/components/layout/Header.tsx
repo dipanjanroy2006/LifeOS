@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { useAuth } from '../../auth/AuthProvider';
 import { useToast } from '../../hooks/useToast';
-import { Search, Command, Sparkles, LogOut, UserCheck } from 'lucide-react';
+import { Sparkles, LogOut, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
-import { GlassCard } from '../common/GlassCard';
 
 export const Header: React.FC = () => {
   const { getDailyLifeScore } = useLifeOSStore();
@@ -23,7 +22,7 @@ export const Header: React.FC = () => {
     try {
       await signOut();
       toast.success('Logged out successfully.');
-    } catch (e: any) {
+    } catch {
       toast.error('Logout operation failed.');
     } finally {
       setShowLogoutConfirm(false);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { GlassCard } from '../common/GlassCard';
-import { BarChart3, TrendingUp, Sparkles, Activity } from 'lucide-react';
+import { TrendingUp, Activity } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { useTheme } from '../../app/providers/ThemeProvider';
 import { GlassCard } from '../common/GlassCard';
-import { Settings, Database, Bell, Sun, Moon, Laptop, Download } from 'lucide-react';
+import { Settings, Database, Sun, Moon, Laptop, Download } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export const SettingsView: React.FC = () => {
