@@ -8,7 +8,7 @@ import { LoadingSkeleton } from '../../shared/components/common/LoadingSkeleton'
 
 export const DashboardLayout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col md:flex-row antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-bg-main text-text-primary flex flex-col md:flex-row antialiased selection:bg-indigo-500 selection:text-white">
       {/* Sidebar Navigation (Desktop) */}
       <Sidebar />
 

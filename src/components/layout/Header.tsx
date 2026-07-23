@@ -41,13 +41,13 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-20 bg-[#09090b]/80 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-20 bg-bg-header/85 backdrop-blur-md border-b border-border-subtle px-4 md:px-8 py-3.5 flex items-center justify-between">
         {/* Page Title & Date */}
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-xl font-bold text-text-primary tracking-tight flex items-center gap-2">
             {getTitle()}
           </h1>
-          <p className="text-xs text-zinc-400 font-mono mt-0.5">
+          <p className="text-xs text-text-muted font-mono mt-0.5">
             {format(new Date(), 'EEEE, MMMM d, yyyy')}
           </p>
         </div>
@@ -57,25 +57,25 @@ export const Header: React.FC = () => {
           {/* Command Palette Trigger */}
           <button
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs transition-colors cursor-pointer"
+            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-bg-card-hover border border-border-subtle text-text-secondary text-xs transition-colors cursor-pointer"
           >
             <Search className="w-3.5 h-3.5" />
             <span>Quick action / search...</span>
-            <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-300 border border-white/10">
+            <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-bg-card border border-border-subtle text-[10px] font-mono text-text-secondary">
               <Command className="w-2.5 h-2.5" /> K
             </kbd>
           </button>
 
           {/* Life Score Quick Pill */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
             <span className="text-xs font-semibold">Score</span>
-            <span className="text-xs font-mono font-bold text-white">{lifeScore.score}</span>
+            <span className="text-xs font-mono font-bold text-text-primary">{lifeScore.score}</span>
           </div>
 
           {/* User Auth Status / Sign Out Trigger */}
           {profile ? (
-            <div className="flex items-center gap-3 pl-2 border-l border-white/10">
+            <div className="flex items-center gap-3 pl-2 border-l border-border-subtle">
               <div className="flex items-center gap-2">
                 <img
                   src={profile.avatar_url}
@@ -83,8 +83,8 @@ export const Header: React.FC = () => {
                   className="w-8 h-8 rounded-full border border-emerald-500/50 object-cover"
                 />
                 <div className="hidden lg:flex flex-col text-left">
-                  <span className="text-xs font-semibold text-white leading-none">{profile.full_name}</span>
-                  <span className="text-[9px] font-mono text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
+                  <span className="text-xs font-semibold text-text-primary leading-none">{profile.full_name}</span>
+                  <span className="text-[9px] font-mono text-emerald-500 font-semibold flex items-center gap-1 mt-0.5">
                     <UserCheck className="w-2.5 h-2.5" /> Connected
                   </span>
                 </div>
@@ -92,7 +92,7 @@ export const Header: React.FC = () => {
               <button
                 onClick={() => setShowLogoutConfirm(true)}
                 title="Sign Out"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-text-secondary hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -104,10 +104,10 @@ export const Header: React.FC = () => {
       {/* Logout Confirmation Dialog Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-sm bg-[#121215] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-sm bg-bg-card border border-border-subtle rounded-2xl p-6 shadow-2xl space-y-4">
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-white">Confirm Sign Out</h3>
-              <p className="text-xs text-zinc-400">
+              <h3 className="text-base font-bold text-text-primary">Confirm Sign Out</h3>
+              <p className="text-xs text-text-secondary">
                 Are you sure you want to terminate your current LifeOS session? You will need to log in again to sync active routines.
               </p>
             </div>
@@ -115,7 +115,7 @@ export const Header: React.FC = () => {
             <div className="flex justify-end items-center gap-3 pt-2">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="px-3.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 text-xs font-medium hover:bg-zinc-700 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-bg-card-hover text-text-secondary text-xs font-medium hover:bg-bg-card-hover cursor-pointer border border-border-subtle"
               >
                 Cancel
               </button>
