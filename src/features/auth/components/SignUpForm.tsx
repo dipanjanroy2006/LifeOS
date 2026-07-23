@@ -109,13 +109,13 @@ export const SignUpForm: React.FC = () => {
   return (
     <GlassCard glow className="p-6 space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-white tracking-tight">Create Account</h2>
-        <p className="text-xs text-zinc-400">Join LifeOS to begin orchestrating your growth metrics.</p>
+        <h2 className="text-xl font-bold text-text-primary tracking-tight">Create Account</h2>
+        <p className="text-xs text-text-secondary">Join LifeOS to begin orchestrating your growth metrics.</p>
       </div>
 
       <form onSubmit={handleSignUp} className="space-y-3.5">
         <div>
-          <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Full Name</label>
+          <label className="text-xs font-semibold text-text-secondary block mb-1.5">Full Name</label>
           <input
             type="text"
             required
@@ -123,14 +123,14 @@ export const SignUpForm: React.FC = () => {
             placeholder="Dipanjan"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+            className="w-full px-4 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
           />
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Email Address</label>
+          <label className="text-xs font-semibold text-text-secondary block mb-1.5">Email Address</label>
           <div className="relative">
-            <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Mail className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="email"
               required
@@ -138,15 +138,15 @@ export const SignUpForm: React.FC = () => {
               placeholder="dipanjanroy906@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+              className="w-full pl-9 pr-4 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Password</label>
+          <label className="text-xs font-semibold text-text-secondary block mb-1.5">Password</label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Lock className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type={showPassword ? 'text' : 'password'}
               required
@@ -154,13 +154,13 @@ export const SignUpForm: React.FC = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+              className="w-full pl-9 pr-10 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
             />
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
-              className="text-zinc-500 hover:text-zinc-300 absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
+              className="text-text-muted hover:text-text-primary absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -169,14 +169,14 @@ export const SignUpForm: React.FC = () => {
           {/* Password Strength Indicator */}
           {password.length > 0 && (
             <div className="mt-2 space-y-1">
-              <div className="flex justify-between items-center text-[10px] font-semibold text-zinc-400">
+              <div className="flex justify-between items-center text-[10px] font-semibold text-text-secondary">
                 <span>{getStrengthLabel()}</span>
                 <span>Score: {strengthScore}/5</span>
               </div>
-              <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-300 ${getStrengthBarColor()}`} />
+              <div className="w-full h-1 bg-bg-card-hover rounded-progress overflow-hidden">
+                <div className={`h-full rounded-progress transition-all duration-300 ${getStrengthBarColor()}`} />
               </div>
-              <p className="text-[9px] text-zinc-500 leading-tight">
+              <p className="text-[9px] text-text-muted leading-tight">
                 Requires: 8+ chars, 1 uppercase, 1 lowercase, 1 digit, 1 special character.
               </p>
             </div>
@@ -184,9 +184,9 @@ export const SignUpForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Confirm Password</label>
+          <label className="text-xs font-semibold text-text-secondary block mb-1.5">Confirm Password</label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Lock className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               required
@@ -194,13 +194,13 @@ export const SignUpForm: React.FC = () => {
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+              className="w-full pl-9 pr-10 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
             />
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="text-zinc-500 hover:text-zinc-300 absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
+              className="text-text-muted hover:text-text-primary absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
             >
               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -214,18 +214,18 @@ export const SignUpForm: React.FC = () => {
             disabled={isLoading}
             checked={agreeTerms}
             onChange={(e) => setAgreeTerms(e.target.checked)}
-            className="w-4 h-4 rounded border-white/10 bg-zinc-900 text-indigo-600 focus:ring-0 focus:ring-offset-0 focus:outline-none shrink-0 mt-0.5"
+            className="w-4 h-4 rounded border-border-subtle bg-bg-card text-brand-primary focus:ring-0 focus:ring-offset-0 focus:outline-none shrink-0 mt-0.5"
           />
-          <label htmlFor="terms" className="text-[11px] text-zinc-400 leading-snug cursor-pointer">
-            I agree to the <span className="text-indigo-400 hover:underline">Terms of Service</span> &{' '}
-            <span className="text-indigo-400 hover:underline">Privacy Policy</span>.
+          <label htmlFor="terms" className="text-[11px] text-text-secondary leading-snug cursor-pointer">
+            I agree to the <span className="text-brand-secondary hover:underline">Terms of Service</span> &{' '}
+            <span className="text-brand-secondary hover:underline">Privacy Policy</span>.
           </label>
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full py-2.5 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white font-semibold text-xs transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-sm"
         >
           {isLoading ? (
             <Spinner />
@@ -240,7 +240,7 @@ export const SignUpForm: React.FC = () => {
       <div className="text-center">
         <Link
           to="/login"
-          className="text-xs text-zinc-400 hover:text-indigo-400 transition-colors font-medium"
+          className="text-xs text-text-secondary hover:text-brand-secondary transition-colors font-medium"
         >
           Already have an account? Sign In
         </Link>

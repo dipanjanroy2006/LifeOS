@@ -95,15 +95,15 @@ export const LoginForm: React.FC = () => {
   return (
     <GlassCard glow className="p-6 space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-white tracking-tight">Welcome Back</h2>
-        <p className="text-xs text-zinc-400">Sign in to resume tracking your growth journey.</p>
+        <h2 className="text-xl font-bold text-text-primary tracking-tight">Welcome Back</h2>
+        <p className="text-xs text-text-secondary">Sign in to resume tracking your growth journey.</p>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Email Address</label>
+          <label className="text-xs font-semibold text-text-secondary block mb-1.5">Email Address</label>
           <div className="relative">
-            <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Mail className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="email"
               required
@@ -111,23 +111,23 @@ export const LoginForm: React.FC = () => {
               placeholder="architect@lifeos.app"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+              className="w-full pl-9 pr-4 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
             />
           </div>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-semibold text-zinc-300">Password</label>
+            <label className="text-xs font-semibold text-text-secondary">Password</label>
             <Link
               to="/forgot-password"
-              className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="text-[11px] font-semibold text-brand-secondary hover:underline transition-colors"
             >
               Forgot Password?
             </Link>
           </div>
           <div className="relative">
-            <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Lock className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type={showPassword ? 'text' : 'password'}
               required
@@ -135,13 +135,13 @@ export const LoginForm: React.FC = () => {
               placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-zinc-900 border border-white/10 text-white text-xs focus:outline-none focus:border-indigo-500 transition-colors disabled:opacity-50"
+              className="w-full pl-9 pr-10 py-2.5 rounded-input bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors disabled:opacity-50"
             />
             <button
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword(!showPassword)}
-              className="text-zinc-500 hover:text-zinc-300 absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
+              className="text-text-muted hover:text-text-primary absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -151,7 +151,7 @@ export const LoginForm: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading || lockoutTimeLeft > 0}
-          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full py-2.5 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white font-semibold text-xs transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-sm"
         >
           {isLoading ? (
             <Spinner />
@@ -166,15 +166,15 @@ export const LoginForm: React.FC = () => {
       </form>
 
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-[10px] font-mono text-zinc-500 uppercase">or</span>
-        <div className="flex-1 h-px bg-white/10" />
+        <div className="flex-1 h-px bg-border-subtle" />
+        <span className="text-[10px] font-mono text-text-muted uppercase">or</span>
+        <div className="flex-1 h-px bg-border-subtle" />
       </div>
 
       <button
         onClick={handleGoogleSignIn}
         disabled={isLoading || lockoutTimeLeft > 0}
-        className="w-full py-2.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-950 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+        className="w-full py-2.5 rounded-btn border border-border-subtle bg-bg-card hover:bg-bg-card-hover text-text-primary font-semibold text-xs transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -200,11 +200,11 @@ export const LoginForm: React.FC = () => {
       <div className="text-center">
         <Link
           to="/signup"
-          className="text-xs text-zinc-400 hover:text-indigo-400 transition-colors font-medium"
+          className="text-xs text-text-secondary hover:text-brand-secondary transition-colors font-medium"
         >
           Don't have an account? Create one
         </Link>
       </div>
     </GlassCard>
   );
-};
+}
