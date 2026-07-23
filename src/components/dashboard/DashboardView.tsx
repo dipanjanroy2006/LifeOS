@@ -1,11 +1,24 @@
 import React from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
+import { useAuth } from '../../auth/AuthProvider';
 import { GlassCard } from '../common/GlassCard';
 import { RadialProgress } from '../common/RadialProgress';
 import { StatWidget } from '../common/StatWidget';
 import { GitHubHeatmap } from '../common/GitHubHeatmap';
-import { CheckSquare, Flame, Target, Calendar as CalendarIcon, ArrowRight, Zap, CheckCircle2, Circle, Plus } from 'lucide-react';
-import { format } from 'date-fns';
+import {
+  CheckSquare,
+  Flame,
+  Target,
+  Calendar as CalendarIcon,
+  ArrowRight,
+  Zap,
+  CheckCircle2,
+  Circle,
+  Plus,
+  Sparkles,
+  ChevronRight
+} from 'lucide-react';
+import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import confetti from 'canvas-confetti';
 
 export const DashboardView: React.FC = () => {
@@ -19,9 +32,23 @@ export const DashboardView: React.FC = () => {
     getDailyLifeScore,
     setActivePage,
   } = useLifeOSStore();
+  const { profile } = useAuth();
 
   const lifeScore = getDailyLifeScore();
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const today = new Date();
+  const todayStr = format(today, 'yyyy-MM-dd');
+
+  // Greeting based on time
+  const getGreeting = () => {
+    const hrs = today.getHours();
+    if (hrs < 12) return 'Good Morning 🌞';
+    if (hrs < 17) return 'Good Afternoon 🌤️';
+    return 'Good Evening 🌇';
+  };
+
+  // Generate week slider days
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   // Habits due today
   const habitsDueToday = habits.filter((h) => !h.archived);
@@ -34,69 +61,68 @@ export const DashboardView: React.FC = () => {
     confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="space-y-6 pb-20 md:pb-8">
-      {/* Top Banner / Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* Radial Life Score Card */}
-        <GlassCard glow className="md:col-span-1 flex flex-col items-center justify-center py-6">
-          <RadialProgress score={lifeScore.score} size={150} />
-          <div className="flex items-center gap-4 mt-4 w-full justify-center text-xs font-mono text-zinc-400">
-            <div>Habits: <span className="text-emerald-400 font-bold">{lifeScore.habit_component}/50</span></div>
-            <div>Goals: <span className="text-indigo-400 font-bold">{lifeScore.goal_component}/30</span></div>
-            <div>Mood: <span className="text-amber-400 font-bold">{lifeScore.mood_component}/20</span></div>
-          </div>
-        </GlassCard>
+  const peakStreak = habits.reduce((max, h) => Math.max(max, h.streak_count), 0);
 
-        {/* Quick Stat Widgets */}
-        <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatWidget
-            title="Habit Execution"
-            value={`${completedTodayCount}/${habitsDueToday.length}`}
-            subtitle={habitsDueToday.length > 0 ? `${Math.round((completedTodayCount / habitsDueToday.length) * 100)}% completed today` : 'No active habits yet'}
-            trend={habitsDueToday.length > 0 ? 'Active' : 'Setup'}
-            icon={CheckSquare}
-            iconColor="text-emerald-400"
-          />
-          <StatWidget
-            title="Active Streaks"
-            value={`${habits.reduce((max, h) => Math.max(max, h.streak_count), 0)} Days`}
-            subtitle="Current peak streak record"
-            trend="Peak"
-            icon={Flame}
-            iconColor="text-amber-400"
-          />
-          <StatWidget
-            title="Goal Velocity"
-            value={`${goals.length} Active`}
-            subtitle="Quarterly OKRs on track"
-            trend={goals.length > 0 ? 'On Track' : 'Create Goal'}
-            icon={Target}
-            iconColor="text-indigo-400"
-          />
-          {/* Consistency Heatmap Card spanning 3 columns */}
-          <GlassCard className="sm:col-span-3">
-            <GitHubHeatmap logs={habitLogs} days={91} />
-          </GlassCard>
+  return (
+    <div className="space-y-6 pb-28 md:pb-8">
+      {/* Top Welcome Panel (Plan.io + Deli Mockup style) */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-subtle pb-5">
+        <div>
+          <h2 className="text-2xl font-bold text-text-primary tracking-tight">
+            {getGreeting()}, {profile?.full_name || 'Grower'}
+          </h2>
+          <p className="text-xs text-text-secondary mt-0.5 font-mono">
+            Orchestrate your routines. Refine your system.
+          </p>
+        </div>
+
+        {/* Hot Streaks Banner Pill */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-semibold text-xs shadow-sm">
+          <Flame className="w-4 h-4 fill-orange-500/10" />
+          <span>{peakStreak} Day Streak</span>
         </div>
       </div>
 
-      {/* Main 2-Column Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Today's Action Checklist & Time Blocks */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Daily Habits Card */}
+      {/* Dynamic Week Date Slider Widget */}
+      <div className="grid grid-cols-7 gap-2 max-w-xl">
+        {weekDays.map((day) => {
+          const isToday = isSameDay(day, today);
+          return (
+            <div
+              key={day.toString()}
+              className={`flex flex-col items-center p-2.5 rounded-xl border select-none transition-all ${
+                isToday
+                  ? 'bg-brand-secondary text-white border-brand-secondary shadow-md scale-105'
+                  : 'bg-bg-card border-border-subtle text-text-secondary hover:text-text-primary hover:bg-bg-card-hover'
+              }`}
+            >
+              <span className="text-[10px] font-mono font-semibold uppercase opacity-85">
+                {format(day, 'eee')}
+              </span>
+              <span className="text-sm font-bold mt-1 font-mono">{format(day, 'd')}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Main Grid: 3 Columns on desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left Column (Core Habits and OKRs) - 8 span */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Habits due checklist */}
           <GlassCard>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <div className="p-1.5 rounded-lg bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                   <CheckSquare className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white">Today's Habits</h3>
+                <h3 className="font-semibold text-text-primary">Today's Habits</h3>
               </div>
               <button
                 onClick={() => setActivePage('habits')}
-                className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium"
+                className="text-xs text-brand-secondary hover:underline flex items-center gap-1 font-semibold cursor-pointer"
               >
                 Manage All <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -104,46 +130,52 @@ export const DashboardView: React.FC = () => {
 
             {habitsDueToday.length === 0 ? (
               <div className="py-8 text-center space-y-3">
-                <p className="text-xs text-zinc-400">No habits added yet. Create your daily routines to start tracking progress.</p>
+                <p className="text-xs text-text-secondary">No habits setup for today.</p>
                 <button
                   onClick={() => setActivePage('habits')}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-xs font-semibold shadow-sm transition-all"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add First Habit
                 </button>
               </div>
             ) : (
-              <div className="space-y-2.5">
-                {habitsDueToday.map((habit) => {
+              <div className="space-y-3">
+                {habitsDueToday.map((habit, index) => {
                   const isCompleted = habitLogs[`${habit.id}_${todayStr}`]?.status === 'completed';
+                  
+                  // Mockup feature: Highlight the first item as a filled primary card accent!
+                  const isFirstHighlight = index === 0;
+
                   return (
                     <div
                       key={habit.id}
                       onClick={() => handleToggleHabit(habit.id)}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                      className={`flex items-center justify-between p-4 rounded-card border transition-all cursor-pointer select-none ${
                         isCompleted
-                          ? 'bg-emerald-950/20 border-emerald-500/30 text-zinc-400'
-                          : 'bg-zinc-900/60 border-white/5 hover:border-white/15 text-white'
+                          ? 'bg-brand-primary/5 border-brand-primary/20 text-text-muted opacity-80'
+                          : isFirstHighlight
+                          ? 'bg-brand-secondary text-white border-brand-secondary shadow-lg shadow-brand-secondary/15 hover:scale-[1.005]'
+                          : 'bg-bg-card border-border-subtle hover:bg-bg-card-hover hover:border-brand-secondary/30 text-text-primary'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <button className="text-emerald-400">
+                        <button className="outline-none">
                           {isCompleted ? (
-                            <CheckCircle2 className="w-5 h-5 fill-emerald-500/20 text-emerald-400" />
+                            <CheckCircle2 className="w-5 h-5 fill-brand-primary/20 text-brand-primary" />
                           ) : (
-                            <Circle className="w-5 h-5 text-zinc-500 hover:text-zinc-300" />
+                            <Circle className={`w-5 h-5 ${isFirstHighlight ? 'text-white' : 'text-text-muted hover:text-text-primary'}`} />
                           )}
                         </button>
-                        <span className={`text-sm font-medium ${isCompleted ? 'line-through text-zinc-500' : ''}`}>
+                        <span className={`text-sm font-semibold ${isCompleted ? 'line-through opacity-70' : ''}`}>
                           {habit.title}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`text-[10px] uppercase font-mono tracking-wider font-semibold px-2 py-0.5 rounded ${isFirstHighlight ? 'bg-white/20 text-white' : 'bg-bg-card-hover text-text-secondary'}`}>
                           {habit.time_of_day}
                         </span>
-                        <span className="text-xs font-mono font-semibold text-amber-400 flex items-center gap-1">
-                          <Flame className="w-3.5 h-3.5" /> {habit.streak_count}d
+                        <span className={`text-xs font-mono font-semibold flex items-center gap-1 ${isFirstHighlight ? 'text-white' : 'text-accent-warning'}`}>
+                          <Flame className="w-3.5 h-3.5 fill-current" /> {habit.streak_count}d
                         </span>
                       </div>
                     </div>
@@ -153,95 +185,29 @@ export const DashboardView: React.FC = () => {
             )}
           </GlassCard>
 
-          {/* Today's Schedule Time Blocks */}
+          {/* OKRs & Goals checklist */}
           <GlassCard>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  <CalendarIcon className="w-4 h-4" />
-                </div>
-                <h3 className="font-semibold text-white">Daily Schedule & Time Blocks</h3>
-              </div>
-              <button
-                onClick={() => setActivePage('calendar')}
-                className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium"
-              >
-                Open Calendar <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {timeBlocks.length === 0 ? (
-              <div className="py-8 text-center space-y-3">
-                <p className="text-xs text-zinc-400">No time blocks scheduled for today. Allocate focused work & workout slots.</p>
-                <button
-                  onClick={() => setActivePage('calendar')}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Schedule Time Block
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {timeBlocks.map((block) => (
-                  <div
-                    key={block.id}
-                    onClick={() => toggleTimeBlock(block.id)}
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
-                      block.is_completed ? 'bg-zinc-900/30 border-white/5 opacity-60' : 'bg-zinc-900/80 border-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-8 rounded-full" style={{ backgroundColor: block.color }} />
-                      <div>
-                        <h4 className={`text-sm font-medium ${block.is_completed ? 'line-through text-zinc-500' : 'text-white'}`}>
-                          {block.title}
-                        </h4>
-                        <p className="text-xs text-zinc-400 font-mono">
-                          {format(new Date(block.start_time), 'HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
-                        </p>
-                      </div>
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded font-semibold ${block.is_completed ? 'bg-zinc-800 text-zinc-500' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'}`}>
-                      {block.is_completed ? 'Done' : block.category}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </GlassCard>
-        </div>
-
-        {/* Right Column: Goal Progress & Quick Reflections */}
-        <div className="space-y-6">
-          {/* Goal Stack */}
-          <GlassCard>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-brand-secondary border border-brand-secondary/20">
                   <Target className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-white">Active Goals Progress</h3>
+                <h3 className="font-semibold text-text-primary">Active OKRs & Goals</h3>
               </div>
               <button
                 onClick={() => setActivePage('goals')}
-                className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-medium"
+                className="text-xs text-brand-secondary hover:underline flex items-center gap-1 font-semibold cursor-pointer"
               >
-                All OKRs <ArrowRight className="w-3.5 h-3.5" />
+                All OKRs <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {goals.length === 0 ? (
               <div className="py-8 text-center space-y-3">
-                <p className="text-xs text-zinc-400">No active goals found. Set quarterly targets across your life pillars.</p>
-                <button
-                  onClick={() => setActivePage('goals')}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Create First Goal
-                </button>
+                <p className="text-xs text-text-secondary">No active goal objectives setup.</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {goals.map((goal) => {
                   const totalProgress = Math.round(
                     (goal.key_results.reduce((acc, kr) => acc + Math.min(1, kr.current_value / kr.target_value), 0) /
@@ -249,19 +215,19 @@ export const DashboardView: React.FC = () => {
                       100
                   );
                   return (
-                    <div key={goal.id} className="space-y-2 p-3 rounded-lg bg-zinc-900/60 border border-white/5">
-                      <div className="flex justify-between items-start">
-                        <h4 className="text-xs font-semibold text-white leading-tight">{goal.title}</h4>
-                        <span className="text-xs font-mono font-bold text-indigo-400">{totalProgress}%</span>
+                    <div key={goal.id} className="p-4 rounded-card border border-border-subtle bg-bg-card space-y-3">
+                      <div className="flex justify-between items-start gap-3">
+                        <h4 className="text-xs font-bold text-text-primary leading-snug">{goal.title}</h4>
+                        <span className="text-xs font-mono font-bold text-brand-secondary">{totalProgress}%</span>
                       </div>
-                      <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 bg-bg-card-hover rounded-progress overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-500"
+                          className="h-full bg-gradient-to-r from-brand-secondary to-brand-primary rounded-progress transition-all duration-500"
                           style={{ width: `${totalProgress}%` }}
                         />
                       </div>
-                      <span className="text-[10px] text-zinc-400 block font-mono">
-                        Target Date: {goal.target_date}
+                      <span className="text-[9px] text-text-muted block font-mono">
+                        Target: {goal.target_date}
                       </span>
                     </div>
                   );
@@ -270,25 +236,122 @@ export const DashboardView: React.FC = () => {
             )}
           </GlassCard>
 
-          {/* Quick Mood & Reflection */}
+          {/* GitHub Heatmap panel */}
           <GlassCard>
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <div className="p-1.5 rounded-lg bg-emerald-500/10 text-brand-primary border border-brand-primary/20">
                 <Zap className="w-4 h-4" />
               </div>
-              <h3 className="font-semibold text-white">Daily Reflection</h3>
+              <h3 className="font-semibold text-text-primary">System Habits Consistency</h3>
             </div>
-            <p className="text-xs text-zinc-400 mb-4">
-              Log your energy and mood to refine your Life Score correlation algorithms.
+            <GitHubHeatmap logs={habitLogs} days={91} />
+          </GlassCard>
+
+        </div>
+
+        {/* Right Column (Widgets Panel: Life Score, Schedule, AI Coach) - 4 span */}
+        <div className="lg:col-span-4 space-y-6">
+          
+          {/* Radial Life Score widget */}
+          <GlassCard className="flex flex-col items-center justify-center py-6 text-center">
+            <h3 className="text-xs font-mono uppercase tracking-widest text-text-muted mb-4">Daily Life Index</h3>
+            <RadialProgress score={lifeScore.score} size={130} />
+            <div className="grid grid-cols-3 gap-2 mt-5 w-full text-[10px] font-mono text-text-secondary border-t border-border-subtle/50 pt-4">
+              <div>
+                <span className="block text-text-muted">Habits</span>
+                <span className="text-brand-primary font-bold">{lifeScore.habit_component}/50</span>
+              </div>
+              <div className="border-x border-border-subtle/50">
+                <span className="block text-text-muted">Goals</span>
+                <span className="text-brand-secondary font-bold">{lifeScore.goal_component}/30</span>
+              </div>
+              <div>
+                <span className="block text-text-muted">Mood</span>
+                <span className="text-accent-warning font-bold">{lifeScore.mood_component}/20</span>
+              </div>
+            </div>
+          </GlassCard>
+
+          {/* AI Coach widget */}
+          <GlassCard className="border border-brand-primary/20 bg-brand-primary/5">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-brand-primary" />
+              <h3 className="text-xs font-bold text-text-primary">AI Growth Coach</h3>
+            </div>
+            <p className="text-xs text-text-secondary leading-relaxed">
+              "Your habit execution index is high today! Completing the final routine of the evening will boost your daily score into Peak Performance status."
             </p>
+          </GlassCard>
+
+          {/* Daily Scheduler Time Blocks */}
+          <GlassCard>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-brand-secondary border border-brand-secondary/20">
+                  <CalendarIcon className="w-4 h-4" />
+                </div>
+                <h3 className="font-semibold text-text-primary">Planner Blocks</h3>
+              </div>
+              <button
+                onClick={() => setActivePage('calendar')}
+                className="text-xs text-brand-secondary hover:underline cursor-pointer font-semibold"
+              >
+                Planner <ChevronRight className="w-3.5 h-3.5 inline" />
+              </button>
+            </div>
+
+            {timeBlocks.length === 0 ? (
+              <div className="py-6 text-center text-xs text-text-muted">
+                No time blocks scheduled.
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {timeBlocks.map((block) => (
+                  <div
+                    key={block.id}
+                    onClick={() => toggleTimeBlock(block.id)}
+                    className={`flex items-center justify-between p-3 rounded-card border transition-all cursor-pointer ${
+                      block.is_completed ? 'bg-bg-card-hover/40 border-border-subtle opacity-60' : 'bg-bg-card border-border-subtle hover:border-brand-secondary/30'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: block.color }} />
+                      <div>
+                        <h4 className={`text-xs font-bold ${block.is_completed ? 'line-through text-text-muted' : 'text-text-primary'}`}>
+                          {block.title}
+                        </h4>
+                        <p className="text-[10px] text-text-muted font-mono mt-0.5">
+                          {format(new Date(block.start_time), 'HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`text-[9px] px-2 py-0.5 rounded font-mono font-semibold ${block.is_completed ? 'bg-bg-card-hover text-text-muted' : 'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'}`}>
+                      {block.is_completed ? 'Done' : block.category}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </GlassCard>
+
+          {/* Quick reflection matrix panel */}
+          <GlassCard>
+            <div className="space-y-1 mb-3">
+              <h3 className="text-xs font-bold text-text-primary">Daily Reflection</h3>
+              <p className="text-[11px] text-text-secondary leading-relaxed">
+                Log your energy and mood to refine your Life Score correlation algorithms.
+              </p>
+            </div>
             <button
               onClick={() => setActivePage('journal')}
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-medium text-xs shadow-lg shadow-indigo-500/20 transition-all text-center"
+              className="w-full py-2 rounded-btn bg-bg-card hover:bg-bg-card-hover border border-border-subtle text-text-primary font-semibold text-xs transition-all cursor-pointer active:scale-98"
             >
-              Open Mood Matrix & Journal
+              Open Mood Matrix
             </button>
           </GlassCard>
+
         </div>
+
       </div>
     </div>
   );
