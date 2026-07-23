@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import { useAuth } from '../../auth/AuthProvider';
 import { GlassCard } from '../common/GlassCard';
@@ -35,7 +35,10 @@ export const DashboardView: React.FC = () => {
 
   const lifeScore = getDailyLifeScore();
   const today = new Date();
-  const todayStr = format(today, 'yyyy-MM-dd');
+  
+  // Track selected date in the week slider (default to today)
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
 
   // Greeting based on time
   const getGreeting = () => {
@@ -49,15 +52,27 @@ export const DashboardView: React.FC = () => {
   const weekStart = startOfWeek(today, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  // Habits due today
+  // Habits due on the selected day
   const habitsDueToday = habits.filter((h) => !h.archived);
   const completedTodayCount = habitsDueToday.filter(
-    (h) => habitLogs[`${h.id}_${todayStr}`]?.status === 'completed'
+    (h) => habitLogs[`${h.id}_${selectedDateStr}`]?.status === 'completed'
   ).length;
 
   const handleToggleHabit = (habitId: string) => {
-    toggleHabitLog(habitId);
-    confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+    // Only allow toggling for past or present days, not future days
+    if (selectedDate > today && !isSameDay(selectedDate, today)) {
+      return;
+    }
+    
+    // Pass custom date option to store if supported, or toggle locally.
+    // In our store, toggleHabitLog toggles the log for the current today date.
+    // We can pass selectedDateStr if the store supports custom dates, or keep standard.
+    toggleHabitLog(habitId, selectedDateStr);
+    
+    const isNowCompleted = habitLogs[`${habitId}_${selectedDateStr}`]?.status !== 'completed';
+    if (isNowCompleted) {
+      confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+    }
   };
 
   const peakStreak = habits.reduce((max, h) => Math.max(max, h.streak_count), 0);
@@ -71,7 +86,7 @@ export const DashboardView: React.FC = () => {
             {getGreeting()}, {profile?.full_name || 'Grower'}
           </h2>
           <p className="text-[10px] text-text-secondary font-mono mt-0.5">
-            Orchestrate your routines. Refine your system.
+            Viewing records for <span className="text-brand-secondary font-bold font-mono">{format(selectedDate, 'EEEE, MMMM d')}</span>
           </p>
         </div>
 
@@ -87,24 +102,29 @@ export const DashboardView: React.FC = () => {
         <GitHubHeatmap logs={habitLogs} days={91} />
       </GlassCard>
 
-      {/* Dynamic Week Date Slider Widget - Compact */}
+      {/* Dynamic Week Date Slider Widget - Compact & Interactive */}
       <div className="grid grid-cols-7 gap-1 max-w-sm sm:max-w-md">
         {weekDays.map((day) => {
-          const isToday = isSameDay(day, today);
+          const isSelected = isSameDay(day, selectedDate);
+          const isCurrentToday = isSameDay(day, today);
+          
           return (
-            <div
+            <button
               key={day.toString()}
-              className={`flex flex-col items-center py-1.5 px-1 rounded-lg border select-none transition-all ${
-                isToday
-                  ? 'bg-brand-secondary text-white border-brand-secondary shadow-md scale-102 animate-pulse-glow'
+              onClick={() => setSelectedDate(day)}
+              className={`flex flex-col items-center py-1.5 px-1 rounded-lg border select-none transition-all cursor-pointer outline-none ${
+                isSelected
+                  ? 'bg-brand-secondary text-white border-brand-secondary shadow-md scale-102 font-bold'
+                  : isCurrentToday
+                  ? 'bg-bg-card border-brand-primary/40 text-brand-primary'
                   : 'bg-bg-card border-border-subtle text-text-secondary hover:text-text-primary hover:bg-bg-card-hover'
               }`}
             >
-              <span className="text-[8px] font-mono font-semibold uppercase opacity-85">
+              <span className="text-[8px] font-mono uppercase tracking-wider">
                 {format(day, 'eee')}
               </span>
               <span className="text-[11px] font-bold mt-0.5 font-mono">{format(day, 'd')}</span>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -122,7 +142,9 @@ export const DashboardView: React.FC = () => {
                 <div className="p-1 rounded-lg bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                   <CheckSquare className="w-3.5 h-3.5" />
                 </div>
-                <h3 className="text-xs font-bold text-text-primary">Today's Habits</h3>
+                <h3 className="text-xs font-bold text-text-primary">
+                  Habits checklist ({format(selectedDate, 'MMM d')})
+                </h3>
               </div>
               <button
                 onClick={() => setActivePage('habits')}
@@ -145,7 +167,7 @@ export const DashboardView: React.FC = () => {
             ) : (
               <div className="space-y-1.5">
                 {habitsDueToday.map((habit, index) => {
-                  const isCompleted = habitLogs[`${habit.id}_${todayStr}`]?.status === 'completed';
+                  const isCompleted = habitLogs[`${habit.id}_${selectedDateStr}`]?.status === 'completed';
                   
                   // Mockup feature: Highlight the first item as a filled primary card accent!
                   const isFirstHighlight = index === 0;
