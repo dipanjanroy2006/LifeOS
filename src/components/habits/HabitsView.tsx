@@ -53,9 +53,9 @@ export const HabitsView: React.FC = () => {
       {/* Header Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Habit Tracker & Frequency Engine</h2>
+          <h2 className="text-xl font-bold text-white tracking-tight">Habits</h2>
           <p className="text-xs text-zinc-400 mt-1">
-            Consistency determines growth. Build streaks to earn streak freeze tokens and boost your Life Score.
+            Build good habits and keep your daily streak going.
           </p>
         </div>
         <button

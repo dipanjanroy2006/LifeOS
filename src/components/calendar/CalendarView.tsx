@@ -60,15 +60,15 @@ export const CalendarView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-white tracking-tight">Time Blocking & Planner</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight">Planner</h2>
             {isRealtimeActive && (
               <span className="flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <Radio className="w-3 h-3 text-emerald-400 animate-pulse" /> Realtime Sync Live
+                <Radio className="w-3 h-3 text-emerald-400 animate-pulse" /> Live Sync
               </span>
             )}
           </div>
           <p className="text-xs text-zinc-400 mt-1">
-            Eliminate cognitive friction by assigning dedicated time slots for workouts, deep work, and mindfulness.
+            Schedule time blocks to plan your work, routines, and rest.
           </p>
         </div>
         <button

@@ -42,9 +42,9 @@ export const GoalsView: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Objectives & Key Results (OKRs)</h2>
+          <h2 className="text-xl font-bold text-white tracking-tight">Goals & OKRs</h2>
           <p className="text-xs text-zinc-400 mt-1">
-            Map long-term quarterly goals to specific measurable metrics across your 5 Life Pillars.
+            Set and track goals for the different areas of your life.
           </p>
         </div>
         <button

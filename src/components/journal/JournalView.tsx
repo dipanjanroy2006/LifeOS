@@ -34,25 +34,25 @@ export const JournalView: React.FC = () => {
     <div className="space-y-6 pb-20 md:pb-8">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white tracking-tight">Journal & Mood Matrix</h2>
+        <h2 className="text-xl font-bold text-white tracking-tight">Journal & Mood</h2>
         <p className="text-xs text-zinc-400 mt-1">
-          Capture subjective emotional state and daily reflections to uncover correlations between habits and well-being.
+          Write down your thoughts and track how you feel.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 2D Matrix Slider Panel */}
+        {/* Mood Slider Panel */}
         <GlassCard className="space-y-6">
           <div className="flex items-center gap-2 pb-3 border-b border-white/5">
             <Smile className="w-5 h-5 text-amber-400" />
-            <h3 className="text-sm font-bold text-white">Subjective Well-being Check-in</h3>
+            <h3 className="text-sm font-bold text-white">How are you feeling today?</h3>
           </div>
 
           {/* Valence Slider */}
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <Smile className="w-3.5 h-3.5 text-amber-400" /> Mood (Valence): {valence} / 5
+                <Smile className="w-3.5 h-3.5 text-amber-400" /> Mood: {valence} / 5
               </span>
               <span className="text-zinc-500 font-mono">
                 {valence === 5 ? 'Ecstatic' : valence === 4 ? 'Positive' : valence === 3 ? 'Neutral' : 'Low'}
@@ -73,7 +73,7 @@ export const JournalView: React.FC = () => {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-indigo-400" /> Energy Level: {energy} / 5
+                <Zap className="w-3.5 h-3.5 text-indigo-400" /> Energy: {energy} / 5
               </span>
               <span className="text-zinc-500 font-mono">
                 {energy === 5 ? 'High Energy' : energy === 4 ? 'Moderate' : energy === 3 ? 'Steady' : 'Exhausted'}
