@@ -1,49 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
-import { Search, Command, Bell, Sparkles, LogIn, LogOut, UserCheck } from 'lucide-react';
+import { useAuth } from '../../auth/AuthProvider';
+import { useToast } from '../../hooks/useToast';
+import { Search, Command, Sparkles, LogOut, UserCheck } from 'lucide-react';
 import { format } from 'date-fns';
-import { supabase } from '../../lib/supabase';
-import { AuthModal } from '../auth/AuthModal';
+import { GlassCard } from '../common/GlassCard';
 
 export const Header: React.FC = () => {
-  const { activePage, profile, setCommandPaletteOpen, getDailyLifeScore, updateProfile } = useLifeOSStore();
+  const { activePage, setCommandPaletteOpen, getDailyLifeScore } = useLifeOSStore();
+  const { profile, signOut } = useAuth();
+  const toast = useToast();
   const lifeScore = getDailyLifeScore();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUser(data.user);
-        updateProfile({
-          id: data.user.id,
-          full_name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User',
-          avatar_url: data.user.user_metadata?.avatar_url || profile.avatar_url,
-        });
-      }
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        updateProfile({
-          id: session.user.id,
-          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-          avatar_url: session.user.user_metadata?.avatar_url || profile.avatar_url,
-        });
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
+  
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+    try {
+      await signOut();
+      toast.success('Logged out successfully.');
+    } catch (e: any) {
+      toast.error('Logout operation failed.');
+    } finally {
+      setShowLogoutConfirm(false);
+    }
   };
 
   const getTitle = () => {
@@ -78,7 +57,7 @@ export const Header: React.FC = () => {
           {/* Command Palette Trigger */}
           <button
             onClick={() => setCommandPaletteOpen(true)}
-            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs transition-colors"
+            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs transition-colors cursor-pointer"
           >
             <Search className="w-3.5 h-3.5" />
             <span>Quick action / search...</span>
@@ -94,8 +73,8 @@ export const Header: React.FC = () => {
             <span className="text-xs font-mono font-bold text-white">{lifeScore.score}</span>
           </div>
 
-          {/* User Auth Status / Sign Out */}
-          {user ? (
+          {/* User Auth Status / Sign Out Trigger */}
+          {profile ? (
             <div className="flex items-center gap-3 pl-2 border-l border-white/10">
               <div className="flex items-center gap-2">
                 <img
@@ -111,26 +90,45 @@ export const Header: React.FC = () => {
                 </div>
               </div>
               <button
-                onClick={handleSignOut}
+                onClick={() => setShowLogoutConfirm(true)}
                 title="Sign Out"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
-          ) : (
-            <button
-              onClick={() => setShowAuthModal(true)}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 transition-all"
-            >
-              <LogIn className="w-3.5 h-3.5" /> Sign In
-            </button>
-          )}
+          ) : null}
         </div>
       </header>
 
-      {/* Auth Modal Overlay */}
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      {/* Logout Confirmation Dialog Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-sm bg-[#121215] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-white">Confirm Sign Out</h3>
+              <p className="text-xs text-zinc-400">
+                Are you sure you want to terminate your current LifeOS session? You will need to log in again to sync active routines.
+              </p>
+            </div>
+            
+            <div className="flex justify-end items-center gap-3 pt-2">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-3.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 text-xs font-medium hover:bg-zinc-700 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg shadow-rose-500/20 cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

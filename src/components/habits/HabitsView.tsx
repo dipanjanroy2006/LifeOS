@@ -33,6 +33,7 @@ export const HabitsView: React.FC = () => {
       time_of_day: timeOfDay,
       color: '#6366f1',
       icon: 'CheckSquare',
+      archived: false,
     });
     setNewTitle('');
     setShowModal(false);

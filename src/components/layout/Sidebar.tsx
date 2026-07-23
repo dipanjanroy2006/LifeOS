@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLifeOSStore } from '../../store/useLifeOSStore';
 import {
   LayoutDashboard,
@@ -18,6 +19,7 @@ import { clsx } from 'clsx';
 export const Sidebar: React.FC = () => {
   const { activePage, setActivePage } = useLifeOSStore();
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,6 +34,11 @@ export const Sidebar: React.FC = () => {
     { id: 'settings', label: 'Settings', icon: Settings },
     { id: 'profile', label: 'Profile', icon: User },
   ];
+
+  const handleNavigation = (id: string) => {
+    setActivePage(id);
+    navigate(`/${id}`);
+  };
 
   return (
     <aside
@@ -56,7 +63,7 @@ export const Sidebar: React.FC = () => {
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors"
+            className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
@@ -75,9 +82,9 @@ export const Sidebar: React.FC = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => setActivePage(item.id)}
+                onClick={() => handleNavigation(item.id)}
                 className={clsx(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 relative group',
+                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 relative group cursor-pointer',
                   isActive
                     ? 'text-white bg-indigo-600/15 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]'
                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/40'
@@ -112,9 +119,9 @@ export const Sidebar: React.FC = () => {
           return (
             <button
               key={item.id}
-              onClick={() => setActivePage(item.id)}
+              onClick={() => handleNavigation(item.id)}
               className={clsx(
-                'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group',
+                'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group cursor-pointer',
                 isActive ? 'text-white bg-zinc-800/80 border border-white/10' : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/40'
               )}
             >
