@@ -53,9 +53,11 @@ export const Sidebar: React.FC = () => {
       <div>
         <div className="flex items-center justify-between p-4 border-b border-border-subtle/50">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
-              <Zap className="w-4 h-4 text-white fill-white" />
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="LifeOS Logo"
+              className="w-8 h-8 rounded-lg object-cover shadow-md border border-border-subtle shrink-0"
+            />
             {!collapsed && (
               <div className="flex flex-col">
                 <span className="font-bold tracking-tight text-text-primary text-base font-mono">LifeOS</span>

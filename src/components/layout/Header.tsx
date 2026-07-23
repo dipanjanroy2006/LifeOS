@@ -48,13 +48,20 @@ export const Header: React.FC = () => {
     <>
       <header className="sticky top-0 z-20 bg-bg-header/85 backdrop-blur-md border-b border-border-subtle px-4 md:px-8 py-3 flex items-center justify-between">
         {/* Page Title & Date */}
-        <div className="min-w-0">
-          <h1 className="text-sm sm:text-base font-extrabold text-text-primary tracking-tight truncate whitespace-nowrap">
-            {getTitle()}
-          </h1>
-          <p className="text-[10px] text-text-muted font-mono mt-0.5 whitespace-nowrap">
-            {format(new Date(), 'eee, MMM d, yyyy')}
-          </p>
+        <div className="min-w-0 flex items-center gap-2">
+          <img
+            src="/logo.jpg"
+            alt="LifeOS Logo"
+            className="w-6 h-6 rounded-md object-cover border border-border-subtle shrink-0"
+          />
+          <div>
+            <h1 className="text-sm sm:text-base font-extrabold text-text-primary tracking-tight truncate whitespace-nowrap">
+              {getTitle()}
+            </h1>
+            <p className="text-[10px] text-text-muted font-mono mt-0.5 whitespace-nowrap">
+              {format(new Date(), 'eee, MMM d, yyyy')}
+            </p>
+          </div>
         </div>
 
         {/* Right Controls */}
