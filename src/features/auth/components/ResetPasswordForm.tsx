@@ -5,6 +5,7 @@ import { GlassCard } from '../../../components/common/GlassCard';
 import { useToast } from '../../../hooks/useToast';
 import { Spinner } from '../../../shared/components/ui/Spinner';
 import { Lock, Eye, EyeOff, Save } from 'lucide-react';
+import { parseAuthError } from '../../../shared/utils/errors';
 
 export const ResetPasswordForm: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export const ResetPasswordForm: React.FC = () => {
       toast.success('Password updated successfully! Please sign in with your new password.');
       navigate('/login');
     } catch (err: any) {
-      toast.error(err.message || 'Failed to update password. Recovery link may have expired.');
+      toast.error(parseAuthError(err));
     } finally {
       setIsLoading(false);
     }

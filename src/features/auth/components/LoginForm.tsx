@@ -5,6 +5,7 @@ import { GlassCard } from '../../../components/common/GlassCard';
 import { useToast } from '../../../hooks/useToast';
 import { Spinner } from '../../../shared/components/ui/Spinner';
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
+import { parseAuthError } from '../../../shared/utils/errors';
 
 const RATE_LIMIT_KEY = 'lifeos_login_attempts';
 const RATE_LIMIT_LOCK_TIME = 60 * 1000; // 1 minute
@@ -77,7 +78,7 @@ export const LoginForm: React.FC = () => {
       navigate('/dashboard');
     } catch (err: any) {
       trackFailedAttempt();
-      toast.error(err.message || 'Incorrect email or password.');
+      toast.error(parseAuthError(err));
     } finally {
       setIsLoading(false);
     }

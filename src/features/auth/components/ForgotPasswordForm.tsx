@@ -5,6 +5,7 @@ import { GlassCard } from '../../../components/common/GlassCard';
 import { useToast } from '../../../hooks/useToast';
 import { Spinner } from '../../../shared/components/ui/Spinner';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { parseAuthError } from '../../../shared/utils/errors';
 
 export const ForgotPasswordForm: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export const ForgotPasswordForm: React.FC = () => {
       setIsSent(true);
       toast.success('Reset link dispatched! Please check your email inbox.');
     } catch (err: any) {
-      toast.error(err.message || 'Failed to dispatch reset link. Verify your email.');
+      toast.error(parseAuthError(err));
     } finally {
       setIsLoading(false);
     }

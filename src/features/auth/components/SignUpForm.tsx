@@ -5,6 +5,7 @@ import { GlassCard } from '../../../components/common/GlassCard';
 import { useToast } from '../../../hooks/useToast';
 import { Spinner } from '../../../shared/components/ui/Spinner';
 import { Mail, Lock, Eye, EyeOff, UserPlus, ShieldAlert } from 'lucide-react';
+import { parseAuthError } from '../../../shared/utils/errors';
 
 export const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ export const SignUpForm: React.FC = () => {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      toast.error(err.message || 'Signup operation failed. Email may already be in use.');
+      toast.error(parseAuthError(err));
     } finally {
       setIsLoading(false);
     }
