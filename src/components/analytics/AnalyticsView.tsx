@@ -24,52 +24,65 @@ export const AnalyticsView: React.FC = () => {
     shortDate: format(parseISO(d.date), 'MMM d'),
   }));
 
+  // Calculate average score dynamically
+  const avgScore = formattedData.length > 0
+    ? Math.round(formattedData.reduce((acc, d) => acc + d.score, 0) / formattedData.length)
+    : 0;
+
   return (
-    <div className="space-y-6 pb-20 md:pb-8">
+    <div className="space-y-4 pb-20 md:pb-8 max-w-4xl">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white tracking-tight">System Statistics & Life Score Correlates</h2>
-        <p className="text-xs text-zinc-400 mt-1">
-          Deep analytics on multi-dimensional growth, habit execution velocity, and mood correlates.
+        <h2 className="text-base font-bold text-text-primary tracking-tight">Consistency Trends</h2>
+        <p className="text-[11px] text-text-secondary mt-0.5">
+          Track your daily routine consistency, goal velocity, and mood logs over time.
         </p>
       </div>
 
       {/* Main Life Score Chart */}
-      <GlassCard className="p-6 space-y-4">
+      <GlassCard className="p-3.5 sm:p-5 space-y-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <TrendingUp className="w-4 h-4" />
+          <div className="flex items-center gap-1.5">
+            <div className="p-1 rounded-lg bg-indigo-500/10 text-brand-secondary border border-brand-secondary/20">
+              <TrendingUp className="w-3.5 h-3.5" />
             </div>
-            <h3 className="text-sm font-bold text-white">14-Day Life Score Index Trend</h3>
+            <div>
+              <h3 className="text-xs font-bold text-text-primary">14-Day Life Score</h3>
+              <p className="text-[9px] text-text-muted mt-0.5">Overall consistency rating index (0-100)</p>
+            </div>
           </div>
-          <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-            Avg: 86.4
+          <span className="text-[10px] font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            Avg: {avgScore}
           </span>
         </div>
 
-        <div className="h-64 w-full">
+        <div className="h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={formattedData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="shortDate" stroke="#71717a" fontSize={11} tickLine={false} />
-              <YAxis domain={[0, 100]} stroke="#71717a" fontSize={11} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" opacity={0.2} />
+              <XAxis dataKey="shortDate" stroke="var(--text-muted)" fontSize={9} tickLine={false} />
+              <YAxis domain={[0, 100]} stroke="var(--text-muted)" fontSize={9} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#121215',
-                  borderColor: 'rgba(255,255,255,0.1)',
+                  backgroundColor: 'var(--bg-card)',
+                  borderColor: 'var(--border-subtle)',
                   borderRadius: '12px',
-                  color: '#fff',
-                  fontSize: '12px',
+                  fontSize: '11px',
+                }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                itemStyle={{ color: 'var(--text-secondary)' }}
+                formatter={(value: any, name: string) => {
+                  if (name === 'score') return [value, 'Life Score'];
+                  return [value, name];
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="score"
-                stroke="#6366f1"
-                strokeWidth={3}
-                dot={{ r: 4, fill: '#6366f1' }}
-                activeDot={{ r: 6, fill: '#10b981' }}
+                stroke="var(--brand-secondary)"
+                strokeWidth={2}
+                dot={{ r: 3, fill: 'var(--brand-secondary)' }}
+                activeDot={{ r: 5, fill: 'var(--brand-primary)' }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -77,32 +90,46 @@ export const AnalyticsView: React.FC = () => {
       </GlassCard>
 
       {/* Component Breakdown Area Chart */}
-      <GlassCard className="p-6 space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <Activity className="w-4 h-4" />
+      <GlassCard className="p-3.5 sm:p-5 space-y-3">
+        <div className="flex items-center gap-1.5">
+          <div className="p-1 rounded-lg bg-emerald-500/10 text-brand-primary border border-brand-primary/20">
+            <Activity className="w-3.5 h-3.5" />
           </div>
-          <h3 className="text-sm font-bold text-white">Multi-Variable Component Breakdown</h3>
+          <div>
+            <h3 className="text-xs font-bold text-text-primary">Daily Score Share</h3>
+            <p className="text-[9px] text-text-muted mt-0.5">
+              Breakdown of Habits (max 50), Goals (max 30), and Mood (max 20) points
+            </p>
+          </div>
         </div>
 
-        <div className="h-64 w-full">
+        <div className="h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={formattedData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="shortDate" stroke="#71717a" fontSize={11} tickLine={false} />
-              <YAxis stroke="#71717a" fontSize={11} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" opacity={0.2} />
+              <XAxis dataKey="shortDate" stroke="var(--text-muted)" fontSize={9} tickLine={false} />
+              <YAxis stroke="var(--text-muted)" fontSize={9} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#121215',
-                  borderColor: 'rgba(255,255,255,0.1)',
+                  backgroundColor: 'var(--bg-card)',
+                  borderColor: 'var(--border-subtle)',
                   borderRadius: '12px',
-                  color: '#fff',
-                  fontSize: '12px',
+                  fontSize: '11px',
+                }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 'bold' }}
+                itemStyle={{ color: 'var(--text-secondary)' }}
+                formatter={(value: any, name: string) => {
+                  switch (name) {
+                    case 'habit_component': return [value, 'Habits Score'];
+                    case 'goal_component': return [value, 'Goals Score'];
+                    case 'mood_component': return [value, 'Mood Score'];
+                    default: return [value, name];
+                  }
                 }}
               />
-              <Area type="monotone" dataKey="habit_component" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-              <Area type="monotone" dataKey="goal_component" stackId="1" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} />
-              <Area type="monotone" dataKey="mood_component" stackId="1" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
+              <Area type="monotone" dataKey="habit_component" stackId="1" stroke="var(--brand-primary)" fill="var(--brand-primary)" fillOpacity={0.2} />
+              <Area type="monotone" dataKey="goal_component" stackId="1" stroke="var(--brand-secondary)" fill="var(--brand-secondary)" fillOpacity={0.2} />
+              <Area type="monotone" dataKey="mood_component" stackId="1" stroke="var(--accent-warning)" fill="var(--accent-warning)" fillOpacity={0.2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
