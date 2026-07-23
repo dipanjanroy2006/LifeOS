@@ -32,28 +32,28 @@ export const Header: React.FC = () => {
 
   const getTitle = () => {
     switch (activePage) {
-      case 'dashboard': return 'Today Command Center';
-      case 'habits': return 'Habit Systems & Streaks';
-      case 'goals': return 'Goals & OKRs Tree';
-      case 'calendar': return 'Time Block Planner';
-      case 'analytics': return 'Life OS Analytics';
-      case 'journal': return 'Daily Reflection & Mood';
-      case 'settings': return 'System Settings';
-      case 'profile': return 'User Profile & Trophies';
+      case 'dashboard': return 'Overview';
+      case 'habits': return 'Habits';
+      case 'goals': return 'Goals';
+      case 'calendar': return 'Planner';
+      case 'analytics': return 'Analytics';
+      case 'journal': return 'Journal';
+      case 'settings': return 'Settings';
+      case 'profile': return 'Profile';
       default: return 'LifeOS';
     }
   };
 
   return (
     <>
-      <header className="sticky top-0 z-20 bg-bg-header/85 backdrop-blur-md border-b border-border-subtle px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-20 bg-bg-header/85 backdrop-blur-md border-b border-border-subtle px-4 md:px-8 py-3 flex items-center justify-between">
         {/* Page Title & Date */}
-        <div>
-          <h1 className="text-xl font-bold text-text-primary tracking-tight flex items-center gap-2">
+        <div className="min-w-0">
+          <h1 className="text-sm sm:text-base font-extrabold text-text-primary tracking-tight truncate whitespace-nowrap">
             {getTitle()}
           </h1>
-          <p className="text-xs text-text-muted font-mono mt-0.5">
-            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          <p className="text-[10px] text-text-muted font-mono mt-0.5 whitespace-nowrap">
+            {format(new Date(), 'eee, MMM d, yyyy')}
           </p>
         </div>
 
