@@ -24,56 +24,56 @@
 }
 
 @layer base {
-  /* Dark Theme (Default) */
+  /* High-Contrast Space Dark Theme (Default) */
   :root {
-    --bg-main: #09090B;
-    --bg-sidebar: #0F172A;
-    --bg-header: rgba(9, 9, 11, 0.85);
-    --bg-card: #1E293B;
-    --bg-card-hover: #1F2937;
-    --bg-glass: rgba(30, 41, 59, 0.75);
+    --bg-main: #050507; /* Pitch dark high-contrast background */
+    --bg-sidebar: #09090b; /* Deep matte black sidebar */
+    --bg-header: rgba(5, 5, 7, 0.85);
+    --bg-card: #0e0e12; /* Rich dark charcoal cards */
+    --bg-card-hover: #141419; /* High-contrast card hover */
+    --bg-glass: rgba(14, 14, 18, 0.8);
 
-    --border-subtle: #374151;
+    --border-subtle: rgba(255, 255, 255, 0.08);
 
-    --text-primary: #F9FAFB;
-    --text-secondary: #D1D5DB;
-    --text-muted: #9CA3AF;
-    --text-disabled: #6B7280;
+    --text-primary: #ffffff; /* Pure white for razor-sharp legibility */
+    --text-secondary: #a1a1aa; /* Light cool grey */
+    --text-muted: #71717a; /* Muted zinc */
+    --text-disabled: #3f3f46;
 
-    --brand-primary: #22C55E; /* Emerald */
-    --brand-secondary: #60A5FA; /* Blue */
+    --brand-primary: #10b981; /* High-vibrancy Emerald */
+    --brand-secondary: #6366f1; /* High-vibrancy Indigo */
 
-    --accent-warning: #FBBF24;
-    --accent-danger: #F87171;
-    --accent-purple: #A78BFA;
+    --accent-warning: #f59e0b;
+    --accent-danger: #f43f5e;
+    --accent-purple: #8b5cf6;
 
-    --shadow-premium: 0 8px 30px rgba(0, 0, 0, 0.35);
+    --shadow-premium: 0 12px 40px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
-  /* Light Theme */
+  /* Soft Dimmed Light Theme (Warm & easy on eyes) */
   .light {
-    --bg-main: #F8FAFC;
-    --bg-sidebar: #FFFFFF;
-    --bg-header: rgba(248, 250, 252, 0.85);
-    --bg-card: #FFFFFF;
-    --bg-card-hover: #F1F5F9;
+    --bg-main: #f0f2f5; /* Soft light grey background */
+    --bg-sidebar: #f8f9fa; /* Warm off-white sidebar */
+    --bg-header: rgba(240, 242, 245, 0.85);
+    --bg-card: #ffffff; /* Clean white cards */
+    --bg-card-hover: #f3f4f6; /* Soft light grey hover */
     --bg-glass: rgba(255, 255, 255, 0.85);
 
-    --border-subtle: #E5E7EB;
+    --border-subtle: rgba(0, 0, 0, 0.06);
 
-    --text-primary: #111827;
-    --text-secondary: #6B7280;
-    --text-muted: #9CA3AF;
-    --text-disabled: #D1D5DB;
+    --text-primary: #18181b; /* Matte charcoal text */
+    --text-secondary: #52525b; /* Soft dark grey */
+    --text-muted: #71717a; /* Muted zinc */
+    --text-disabled: #d4d4d8;
 
-    --brand-primary: #22C55E; /* Emerald */
-    --brand-secondary: #3B82F6; /* Blue */
+    --brand-primary: #10b981; /* Emerald */
+    --brand-secondary: #4f46e5; /* Indigo */
 
-    --accent-warning: #F59E0B;
-    --accent-danger: #EF4444;
-    --accent-purple: #8B5CF6;
+    --accent-warning: #d97706;
+    --accent-danger: #e11d48;
+    --accent-purple: #6d28d9;
 
-    --shadow-premium: 0 8px 30px rgba(0, 0, 0, 0.05);
+    --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
   }
 
   body {
@@ -135,6 +135,7 @@
   background: var(--bg-card-hover);
   border-color: var(--brand-secondary);
   transform: translateY(-2px);
+  box-shadow: 0 20px 35px -15px rgba(0, 0, 0, 0.15);
 }
 
 /* Custom Scrollbars */
