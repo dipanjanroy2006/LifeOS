@@ -64,61 +64,61 @@ export const DashboardView: React.FC = () => {
   const peakStreak = habits.reduce((max, h) => Math.max(max, h.streak_count), 0);
 
   return (
-    <div className="space-y-6 pb-28 md:pb-8">
+    <div className="space-y-4 sm:space-y-6 pb-28 md:pb-8">
       {/* Top Welcome Panel (Plan.io + Deli Mockup style) */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-subtle pb-5">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-border-subtle pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight">
             {getGreeting()}, {profile?.full_name || 'Grower'}
           </h2>
-          <p className="text-xs text-text-secondary mt-0.5 font-mono">
+          <p className="text-[11px] text-text-secondary mt-0.5 font-mono">
             Orchestrate your routines. Refine your system.
           </p>
         </div>
 
         {/* Hot Streaks Banner Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-semibold text-xs shadow-sm">
-          <Flame className="w-4 h-4 fill-orange-500/10" />
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-semibold text-xs shadow-sm">
+          <Flame className="w-3.5 h-3.5 fill-orange-500/10" />
           <span>{peakStreak} Day Streak</span>
         </div>
       </div>
 
       {/* Dynamic Week Date Slider Widget */}
-      <div className="grid grid-cols-7 gap-2 max-w-xl">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 max-w-sm sm:max-w-xl">
         {weekDays.map((day) => {
           const isToday = isSameDay(day, today);
           return (
             <div
               key={day.toString()}
-              className={`flex flex-col items-center p-2.5 rounded-xl border select-none transition-all ${
+              className={`flex flex-col items-center py-2 px-1 sm:py-2.5 rounded-xl border select-none transition-all ${
                 isToday
-                  ? 'bg-brand-secondary text-white border-brand-secondary shadow-md scale-105'
+                  ? 'bg-brand-secondary text-white border-brand-secondary shadow-md scale-105 animate-pulse-glow'
                   : 'bg-bg-card border-border-subtle text-text-secondary hover:text-text-primary hover:bg-bg-card-hover'
               }`}
             >
-              <span className="text-[10px] font-mono font-semibold uppercase opacity-85">
+              <span className="text-[9px] sm:text-[10px] font-mono font-semibold uppercase opacity-85">
                 {format(day, 'eee')}
               </span>
-              <span className="text-sm font-bold mt-1 font-mono">{format(day, 'd')}</span>
+              <span className="text-xs sm:text-sm font-bold mt-0.5 font-mono">{format(day, 'd')}</span>
             </div>
           );
         })}
       </div>
 
       {/* Main Grid: 3 Columns on desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         {/* Left Column (Core Habits and OKRs) - 8 span */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-4 sm:space-y-6">
           
           {/* Habits due checklist */}
-          <GlassCard>
-            <div className="flex items-center justify-between mb-4">
+          <GlassCard className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
                   <CheckSquare className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-text-primary">Today's Habits</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-text-primary">Today's Habits</h3>
               </div>
               <button
                 onClick={() => setActivePage('habits')}
@@ -129,17 +129,17 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {habitsDueToday.length === 0 ? (
-              <div className="py-8 text-center space-y-3">
+              <div className="py-6 text-center space-y-3">
                 <p className="text-xs text-text-secondary">No habits setup for today.</p>
                 <button
                   onClick={() => setActivePage('habits')}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-xs font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-btn bg-brand-primary hover:bg-emerald-600 text-white text-xs font-semibold shadow-sm transition-all"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add First Habit
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {habitsDueToday.map((habit, index) => {
                   const isCompleted = habitLogs[`${habit.id}_${todayStr}`]?.status === 'completed';
                   
@@ -150,7 +150,7 @@ export const DashboardView: React.FC = () => {
                     <div
                       key={habit.id}
                       onClick={() => handleToggleHabit(habit.id)}
-                      className={`flex items-center justify-between p-4 rounded-card border transition-all cursor-pointer select-none ${
+                      className={`flex items-center justify-between p-3 sm:p-3.5 rounded-card border transition-all cursor-pointer select-none ${
                         isCompleted
                           ? 'bg-brand-primary/5 border-brand-primary/20 text-text-muted opacity-80'
                           : isFirstHighlight
@@ -158,23 +158,23 @@ export const DashboardView: React.FC = () => {
                           : 'bg-bg-card border-border-subtle hover:bg-bg-card-hover hover:border-brand-secondary/30 text-text-primary'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <button className="outline-none">
+                      <div className="flex items-center gap-2.5">
+                        <button className="outline-none shrink-0">
                           {isCompleted ? (
-                            <CheckCircle2 className="w-5 h-5 fill-brand-primary/20 text-brand-primary" />
+                            <CheckCircle2 className="w-4.5 h-4.5 fill-brand-primary/20 text-brand-primary" />
                           ) : (
-                            <Circle className={`w-5 h-5 ${isFirstHighlight ? 'text-white' : 'text-text-muted hover:text-text-primary'}`} />
+                            <Circle className={`w-4.5 h-4.5 ${isFirstHighlight ? 'text-white' : 'text-text-muted hover:text-text-primary'}`} />
                           )}
                         </button>
-                        <span className={`text-sm font-semibold ${isCompleted ? 'line-through opacity-70' : ''}`}>
+                        <span className={`text-xs sm:text-sm font-semibold ${isCompleted ? 'line-through opacity-70' : ''}`}>
                           {habit.title}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2.5">
-                        <span className={`text-[10px] uppercase font-mono tracking-wider font-semibold px-2 py-0.5 rounded ${isFirstHighlight ? 'bg-white/20 text-white' : 'bg-bg-card-hover text-text-secondary'}`}>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[9px] uppercase font-mono tracking-wider font-semibold px-1.5 py-0.5 rounded ${isFirstHighlight ? 'bg-white/20 text-white' : 'bg-bg-card-hover text-text-secondary'}`}>
                           {habit.time_of_day}
                         </span>
-                        <span className={`text-xs font-mono font-semibold flex items-center gap-1 ${isFirstHighlight ? 'text-white' : 'text-accent-warning'}`}>
+                        <span className={`text-xs font-mono font-semibold flex items-center gap-0.5 ${isFirstHighlight ? 'text-white' : 'text-accent-warning'}`}>
                           <Flame className="w-3.5 h-3.5 fill-current" /> {habit.streak_count}d
                         </span>
                       </div>
@@ -186,13 +186,13 @@ export const DashboardView: React.FC = () => {
           </GlassCard>
 
           {/* OKRs & Goals checklist */}
-          <GlassCard>
-            <div className="flex items-center justify-between mb-4">
+          <GlassCard className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-indigo-500/10 text-brand-secondary border border-brand-secondary/20">
                   <Target className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-text-primary">Active OKRs & Goals</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-text-primary">Active OKRs & Goals</h3>
               </div>
               <button
                 onClick={() => setActivePage('goals')}
@@ -203,11 +203,11 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {goals.length === 0 ? (
-              <div className="py-8 text-center space-y-3">
-                <p className="text-xs text-text-secondary">No active goal objectives setup.</p>
+              <div className="py-6 text-center text-xs text-text-muted">
+                No active goal objectives setup.
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {goals.map((goal) => {
                   const totalProgress = Math.round(
                     (goal.key_results.reduce((acc, kr) => acc + Math.min(1, kr.current_value / kr.target_value), 0) /
@@ -215,12 +215,12 @@ export const DashboardView: React.FC = () => {
                       100
                   );
                   return (
-                    <div key={goal.id} className="p-4 rounded-card border border-border-subtle bg-bg-card space-y-3">
-                      <div className="flex justify-between items-start gap-3">
-                        <h4 className="text-xs font-bold text-text-primary leading-snug">{goal.title}</h4>
+                    <div key={goal.id} className="p-3 rounded-card border border-border-subtle bg-bg-card space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <h4 className="text-[11px] sm:text-xs font-bold text-text-primary leading-snug">{goal.title}</h4>
                         <span className="text-xs font-mono font-bold text-brand-secondary">{totalProgress}%</span>
                       </div>
-                      <div className="w-full h-1.5 bg-bg-card-hover rounded-progress overflow-hidden">
+                      <div className="w-full h-1 bg-bg-card-hover rounded-progress overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-brand-secondary to-brand-primary rounded-progress transition-all duration-500"
                           style={{ width: `${totalProgress}%` }}
@@ -237,26 +237,20 @@ export const DashboardView: React.FC = () => {
           </GlassCard>
 
           {/* GitHub Heatmap panel */}
-          <GlassCard>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-emerald-500/10 text-brand-primary border border-brand-primary/20">
-                <Zap className="w-4 h-4" />
-              </div>
-              <h3 className="font-semibold text-text-primary">System Habits Consistency</h3>
-            </div>
+          <GlassCard className="p-3.5 sm:p-5">
             <GitHubHeatmap logs={habitLogs} days={91} />
           </GlassCard>
 
         </div>
 
         {/* Right Column (Widgets Panel: Life Score, Schedule, AI Coach) - 4 span */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-4 sm:space-y-6">
           
           {/* Radial Life Score widget */}
-          <GlassCard className="flex flex-col items-center justify-center py-6 text-center">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-text-muted mb-4">Daily Life Index</h3>
-            <RadialProgress score={lifeScore.score} size={130} />
-            <div className="grid grid-cols-3 gap-2 mt-5 w-full text-[10px] font-mono text-text-secondary border-t border-border-subtle/50 pt-4">
+          <GlassCard className="p-3.5 sm:p-5 flex flex-col items-center justify-center py-5 text-center">
+            <h3 className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-3">Daily Life Index</h3>
+            <RadialProgress score={lifeScore.score} size={110} />
+            <div className="grid grid-cols-3 gap-1 mt-4 w-full text-[9px] font-mono text-text-secondary border-t border-border-subtle/50 pt-3">
               <div>
                 <span className="block text-text-muted">Habits</span>
                 <span className="text-brand-primary font-bold">{lifeScore.habit_component}/50</span>
@@ -273,24 +267,24 @@ export const DashboardView: React.FC = () => {
           </GlassCard>
 
           {/* AI Coach widget */}
-          <GlassCard className="border border-brand-primary/20 bg-brand-primary/5">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-brand-primary" />
+          <GlassCard className="p-3.5 sm:p-5 border border-brand-primary/20 bg-brand-primary/5">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-brand-primary" />
               <h3 className="text-xs font-bold text-text-primary">AI Growth Coach</h3>
             </div>
-            <p className="text-xs text-text-secondary leading-relaxed">
+            <p className="text-[11px] text-text-secondary leading-relaxed">
               "Your habit execution index is high today! Completing the final routine of the evening will boost your daily score into Peak Performance status."
             </p>
           </GlassCard>
 
           {/* Daily Scheduler Time Blocks */}
-          <GlassCard>
-            <div className="flex items-center justify-between mb-4">
+          <GlassCard className="p-3.5 sm:p-5">
+            <div className="flex items-center justify-between mb-3.5">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-indigo-500/10 text-brand-secondary border border-brand-secondary/20">
                   <CalendarIcon className="w-4 h-4" />
                 </div>
-                <h3 className="font-semibold text-text-primary">Planner Blocks</h3>
+                <h3 className="text-sm sm:text-base font-semibold text-text-primary">Planner Blocks</h3>
               </div>
               <button
                 onClick={() => setActivePage('calendar')}
@@ -301,31 +295,31 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {timeBlocks.length === 0 ? (
-              <div className="py-6 text-center text-xs text-text-muted">
+              <div className="py-4 text-center text-xs text-text-muted">
                 No time blocks scheduled.
               </div>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {timeBlocks.map((block) => (
                   <div
                     key={block.id}
                     onClick={() => toggleTimeBlock(block.id)}
-                    className={`flex items-center justify-between p-3 rounded-card border transition-all cursor-pointer ${
+                    className={`flex items-center justify-between p-2.5 rounded-card border transition-all cursor-pointer ${
                       block.is_completed ? 'bg-bg-card-hover/40 border-border-subtle opacity-60' : 'bg-bg-card border-border-subtle hover:border-brand-secondary/30'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: block.color }} />
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-1 h-5 rounded-full" style={{ backgroundColor: block.color }} />
                       <div>
-                        <h4 className={`text-xs font-bold ${block.is_completed ? 'line-through text-text-muted' : 'text-text-primary'}`}>
+                        <h4 className={`text-[11px] font-bold ${block.is_completed ? 'line-through text-text-muted' : 'text-text-primary'}`}>
                           {block.title}
                         </h4>
-                        <p className="text-[10px] text-text-muted font-mono mt-0.5">
+                        <p className="text-[9px] text-text-muted font-mono mt-0.5">
                           {format(new Date(block.start_time), 'HH:mm')} - {format(new Date(block.end_time), 'HH:mm')}
                         </p>
                       </div>
                     </div>
-                    <span className={`text-[9px] px-2 py-0.5 rounded font-mono font-semibold ${block.is_completed ? 'bg-bg-card-hover text-text-muted' : 'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'}`}>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-semibold ${block.is_completed ? 'bg-bg-card-hover text-text-muted' : 'bg-brand-secondary/10 text-brand-secondary border border-brand-secondary/20'}`}>
                       {block.is_completed ? 'Done' : block.category}
                     </span>
                   </div>
@@ -335,10 +329,10 @@ export const DashboardView: React.FC = () => {
           </GlassCard>
 
           {/* Quick reflection matrix panel */}
-          <GlassCard>
-            <div className="space-y-1 mb-3">
+          <GlassCard className="p-3.5 sm:p-5">
+            <div className="space-y-1 mb-2.5">
               <h3 className="text-xs font-bold text-text-primary">Daily Reflection</h3>
-              <p className="text-[11px] text-text-secondary leading-relaxed">
+              <p className="text-[10px] text-text-secondary leading-relaxed">
                 Log your energy and mood to refine your Life Score correlation algorithms.
               </p>
             </div>

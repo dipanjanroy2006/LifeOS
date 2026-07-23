@@ -69,13 +69,13 @@ export const GitHubHeatmap: React.FC<GitHubHeatmapProps> = ({ logs, days = 105 }
         </div>
       </div>
 
-      <div className="grid grid-flow-col grid-rows-7 gap-1.5 overflow-x-auto pb-1 pt-1">
+      <div className="grid grid-flow-col grid-rows-7 gap-1 md:gap-1.5 overflow-x-auto pb-1 pt-1">
         {dateList.map((item) => (
           <div
             key={item.date}
             onMouseEnter={(e) => handleMouseEnter(item, e)}
             onMouseLeave={() => setHoveredDay(null)}
-            className={`w-3.5 h-3.5 rounded-sm border transition-all duration-150 hover:scale-125 hover:z-10 cursor-pointer ${getShade(
+            className={`w-2.5 h-2.5 md:w-3.5 md:h-3.5 rounded-sm border transition-all duration-150 hover:scale-125 hover:z-10 cursor-pointer ${getShade(
               item.count
             )}`}
           />
