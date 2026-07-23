@@ -50,21 +50,21 @@
     --shadow-premium: 0 12px 40px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
-  /* Soft Dimmed Light Theme (Warm & easy on eyes) */
+  /* Soft Dimmed Lavender Light Theme (Warm, elegant, matches mockup) */
   .light {
-    --bg-main: #f0f2f5; /* Soft light grey background */
-    --bg-sidebar: #f8f9fa; /* Warm off-white sidebar */
-    --bg-header: rgba(240, 242, 245, 0.85);
+    --bg-main: #eae8f5; /* Warm lavender-tinted light background */
+    --bg-sidebar: #f5f4fa; /* Soft warm sidebar */
+    --bg-header: rgba(234, 232, 245, 0.85);
     --bg-card: #ffffff; /* Clean white cards */
-    --bg-card-hover: #f3f4f6; /* Soft light grey hover */
+    --bg-card-hover: #f1eff9; /* Soft warm hover */
     --bg-glass: rgba(255, 255, 255, 0.85);
 
-    --border-subtle: rgba(0, 0, 0, 0.06);
+    --border-subtle: rgba(0, 0, 0, 0.05);
 
-    --text-primary: #18181b; /* Matte charcoal text */
-    --text-secondary: #52525b; /* Soft dark grey */
-    --text-muted: #71717a; /* Muted zinc */
-    --text-disabled: #d4d4d8;
+    --text-primary: #181725; /* Deep purple-charcoal text */
+    --text-secondary: #555365; /* Soft purple-grey */
+    --text-muted: #828096; /* Muted zinc */
+    --text-disabled: #d5d3e0;
 
     --brand-primary: #10b981; /* Emerald */
     --brand-secondary: #4f46e5; /* Indigo */
@@ -73,7 +73,7 @@
     --accent-danger: #e11d48;
     --accent-purple: #6d28d9;
 
-    --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    --shadow-premium: 0 10px 30px -10px rgba(80, 70, 100, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.015);
   }
 
   body {
