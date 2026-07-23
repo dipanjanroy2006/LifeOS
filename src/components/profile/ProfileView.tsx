@@ -26,75 +26,77 @@ export const ProfileView: React.FC = () => {
   };
 
   const themeOptions = [
-    { id: 'light' as const, name: 'Light', icon: Sun, color: 'text-amber-500 bg-amber-500/10' },
-    { id: 'dark' as const, name: 'Dark', icon: Moon, color: 'text-indigo-400 bg-indigo-500/10' },
-    { id: 'system' as const, name: 'System', icon: Laptop, color: 'text-emerald-400 bg-emerald-500/10' }
+    { id: 'light' as const, name: 'Light', icon: Sun },
+    { id: 'dark' as const, name: 'Dark', icon: Moon },
+    { id: 'system' as const, name: 'System', icon: Laptop }
   ];
 
   const badges = [
-    { title: 'Consistency Pioneer', desc: 'Maintained a 14-day consecutive habit streak', icon: Flame, color: '#f59e0b', earned: true },
-    { title: 'Goal Crusher', desc: 'Completed Q2 key result metrics on target', icon: Target, color: '#6366f1', earned: true },
-    { title: 'Peak Life Score', desc: 'Reached a daily Life Score above 85/100', icon: Sparkles, color: '#10b981', earned: true },
-    { title: 'Master Architect', desc: 'Built and configured LifeOS core environment', icon: ShieldCheck, color: '#8b5cf6', earned: true },
+    { title: 'Consistency Pioneer', desc: 'Maintained a 14-day consecutive habit streak', icon: Flame, color: '#f59e0b' },
+    { title: 'Goal Crusher', desc: 'Completed Q2 key result metrics on target', icon: Target, color: '#6366f1' },
+    { title: 'Peak Life Score', desc: 'Reached a daily Life Score above 85/100', icon: Sparkles, color: '#10b981' },
+    { title: 'Master Architect', desc: 'Built and configured LifeOS core environment', icon: ShieldCheck, color: '#8b5cf6' },
   ];
 
   return (
-    <div className="space-y-4 pb-28 md:pb-8 max-w-4xl">
+    <div className="space-y-3 pb-28 md:pb-8 max-w-2xl mx-auto">
       {/* Profile Banner */}
-      <GlassCard glow className="p-4 flex flex-col sm:flex-row items-center gap-4 text-text-primary">
+      <GlassCard className="p-3 flex items-center gap-3">
         <img
-          src={profile?.avatar_url}
+          src={profile?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'}
           alt={profile?.full_name}
-          className="w-16 h-16 rounded-full border-2 border-indigo-500/50 shadow-md object-cover"
+          className="w-12 h-12 rounded-full border border-indigo-500/30 object-cover shadow-sm"
         />
-        <div className="space-y-1 text-center sm:text-left">
-          <div className="flex items-center justify-center sm:justify-start gap-2">
-            <h2 className="text-lg font-bold text-text-primary tracking-tight">{profile?.full_name}</h2>
-            <span className="text-[9px] font-semibold font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-xs sm:text-sm font-extrabold text-text-primary tracking-tight">
+              {profile?.full_name || 'Jacob Sandra'}
+            </h2>
+            <span className="text-[8px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
               Pro Architect
             </span>
           </div>
-          <p className="text-[10px] text-text-muted font-mono">Member since {profile?.created_at || 'July 2026'}</p>
+          <p className="text-[9px] text-text-muted font-mono">Member since {profile?.created_at || 'July 2026'}</p>
         </div>
       </GlassCard>
 
       {/* Lifetime Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <GlassCard className="text-center p-3">
-          <span className="text-[9px] uppercase tracking-wider text-text-muted font-semibold block">Total Habits Logged</span>
-          <span className="text-2xl font-extrabold text-text-primary font-mono mt-0.5 block">{totalCompletedHabits}</span>
+      <div className="grid grid-cols-3 gap-2">
+        <GlassCard className="text-center p-2.5">
+          <span className="text-[8px] uppercase tracking-wider text-text-muted font-semibold block">Habits Logged</span>
+          <span className="text-lg font-bold text-text-primary font-mono mt-0.5 block">{totalCompletedHabits}</span>
         </GlassCard>
-        <GlassCard className="text-center p-3">
-          <span className="text-[9px] uppercase tracking-wider text-text-muted font-semibold block">All-time Peak Streak</span>
-          <span className="text-2xl font-extrabold text-accent-warning font-mono mt-0.5 block">{highestStreak} Days</span>
+        <GlassCard className="text-center p-2.5">
+          <span className="text-[8px] uppercase tracking-wider text-text-muted font-semibold block">Peak Streak</span>
+          <span className="text-lg font-bold text-accent-warning font-mono mt-0.5 block">{highestStreak}d</span>
         </GlassCard>
-        <GlassCard className="text-center p-3">
-          <span className="text-[9px] uppercase tracking-wider text-text-muted font-semibold block">Today Life Score</span>
-          <span className="text-2xl font-extrabold text-brand-secondary font-mono mt-0.5 block">{lifeScore.score}/100</span>
+        <GlassCard className="text-center p-2.5">
+          <span className="text-[8px] uppercase tracking-wider text-text-muted font-semibold block">Today Score</span>
+          <span className="text-lg font-bold text-brand-secondary font-mono mt-0.5 block">{lifeScore.score}</span>
         </GlassCard>
       </div>
 
       {/* Badge Showcase */}
-      <GlassCard className="p-3 space-y-3">
-        <div className="flex items-center gap-1.5 pb-2 border-b border-border-subtle">
-          <Award className="w-4 h-4 text-accent-warning" />
-          <h3 className="text-xs font-bold text-text-primary">Trophy Case & Milestones</h3>
+      <GlassCard className="p-3 space-y-2">
+        <div className="flex items-center gap-1 pb-1.5 border-b border-border-subtle">
+          <Award className="w-3.5 h-3.5 text-accent-warning" />
+          <h3 className="text-[10px] font-bold text-text-primary uppercase tracking-wider">Milestones achieved</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {badges.map((b) => {
             const Icon = b.icon;
             return (
-              <div key={b.title} className="flex items-start gap-2.5 p-3 rounded-card bg-bg-card border border-border-subtle">
+              <div key={b.title} className="flex items-center gap-2 p-2 rounded-2xl bg-bg-card border border-border-subtle">
                 <div
-                  className="p-1.5 rounded-lg shrink-0 border"
-                  style={{ color: b.color, backgroundColor: `${b.color}15`, borderColor: `${b.color}30` }}
+                  className="p-1 rounded-lg shrink-0 border"
+                  style={{ color: b.color, backgroundColor: `${b.color}15`, borderColor: `${b.color}25` }}
                 >
-                  <Icon className="w-4.5 h-4.5" />
+                  <Icon className="w-3.5 h-3.5" />
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-text-primary">{b.title}</h4>
-                  <p className="text-[10px] text-text-secondary mt-0.5">{b.desc}</p>
+                <div className="min-w-0">
+                  <h4 className="text-[10px] font-bold text-text-primary truncate">{b.title}</h4>
+                  <p className="text-[9px] text-text-muted truncate">{b.desc}</p>
                 </div>
               </div>
             );
@@ -103,73 +105,70 @@ export const ProfileView: React.FC = () => {
       </GlassCard>
 
       {/* Mobile Settings Block - DISPLAYED ONLY ON MOBILE DEVICES */}
-      <div className="block md:hidden space-y-4">
-        <GlassCard className="p-3 space-y-3">
-          <div className="flex items-center gap-1.5 pb-2 border-b border-border-subtle">
-            <Settings className="w-4 h-4 text-brand-secondary" />
-            <h3 className="text-xs font-bold text-text-primary">Preferences</h3>
+      <div className="block md:hidden space-y-3">
+        <GlassCard className="p-3 space-y-2.5">
+          <div className="flex items-center gap-1 pb-1.5 border-b border-border-subtle">
+            <Settings className="w-3.5 h-3.5 text-brand-secondary" />
+            <h3 className="text-[10px] font-bold text-text-primary uppercase tracking-wider">Preferences</h3>
           </div>
 
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-[10px] font-semibold text-text-secondary block mb-1">Display Name</label>
+              <label className="text-[9px] font-semibold text-text-secondary block mb-0.5">Display Name</label>
               <input
                 type="text"
                 value={profile?.full_name || ''}
                 onChange={(e) => updateProfile({ full_name: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors"
+                className="w-full px-2 py-1 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-[10px] focus:outline-none focus:border-brand-secondary transition-colors"
               />
             </div>
             
             <div>
-              <label className="text-[10px] font-semibold text-text-secondary block mb-1">Timezone</label>
+              <label className="text-[9px] font-semibold text-text-secondary block mb-0.5">Timezone</label>
               <input
                 type="text"
                 value={profile?.timezone || ''}
                 onChange={(e) => updateProfile({ timezone: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-xs focus:outline-none focus:border-brand-secondary transition-colors"
+                className="w-full px-2 py-1 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-[10px] focus:outline-none focus:border-brand-secondary transition-colors"
               />
             </div>
+          </div>
 
-            {/* Theme selectors */}
-            <div>
-              <label className="text-[10px] font-semibold text-text-secondary block mb-1.5">Theme Appearance</label>
-              <div className="grid grid-cols-3 gap-2">
-                {themeOptions.map((opt) => {
-                  const Icon = opt.icon;
-                  const isActive = theme === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => setTheme(opt.id)}
-                      className={clsx(
-                        'flex items-center justify-center gap-1.5 py-2 px-1 rounded-xl border text-[10px] font-bold transition-all cursor-pointer outline-none select-none',
-                        isActive
-                          ? 'border-brand-secondary bg-bg-card-hover text-text-primary shadow-sm'
-                          : 'border-border-subtle bg-bg-card text-text-secondary hover:bg-bg-card-hover'
-                      )}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      <span>{opt.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Theme selectors */}
+          <div className="pt-1.5">
+            <label className="text-[9px] font-semibold text-text-secondary block mb-1">Theme Appearance</label>
+            <div className="grid grid-cols-3 gap-1.5">
+              {themeOptions.map((opt) => {
+                const Icon = opt.icon;
+                const isActive = theme === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => setTheme(opt.id)}
+                    className={clsx(
+                      'flex items-center justify-center gap-1 py-1.5 rounded-xl border text-[9px] font-bold transition-all cursor-pointer outline-none select-none',
+                      isActive
+                        ? 'border-brand-secondary bg-bg-card-hover text-text-primary shadow-sm'
+                        : 'border-border-subtle bg-bg-card text-text-secondary hover:bg-bg-card-hover'
+                    )}
+                  >
+                    <Icon className="w-3 h-3" />
+                    <span>{opt.name}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </GlassCard>
 
         {/* Data export card */}
-        <GlassCard className="p-3 space-y-2">
-          <div className="flex items-center gap-1.5 pb-2 border-b border-border-subtle">
-            <Database className="w-4 h-4 text-brand-primary" />
-            <h3 className="text-xs font-bold text-text-primary">Data Backup</h3>
-          </div>
+        <GlassCard className="p-3">
           <button
             onClick={handleExport}
-            className="w-full flex items-center justify-center gap-1.5 py-2 rounded-btn bg-bg-card hover:bg-bg-card-hover text-text-primary text-[10px] font-semibold border border-border-subtle transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-1 py-1.5 rounded-btn bg-bg-card hover:bg-bg-card-hover text-text-primary text-[9px] font-semibold border border-border-subtle transition-all cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-brand-primary" /> Export Snapshot
+            <Download className="w-3 h-3 text-brand-primary" />
+            <span>Export Snapshot</span>
           </button>
         </GlassCard>
       </div>
